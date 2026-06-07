@@ -35,3 +35,18 @@ test("protected routes redirect anonymous users to login", async ({
     expect(res.headers()["location"], path).toContain("/login");
   }
 });
+
+test("clinician specialty autocomplete suggests while typing", async ({
+  page,
+}) => {
+  await page.goto("/register");
+  await page.getByRole("button", { name: "Clinician" }).click();
+
+  const specialty = page.getByPlaceholder(/type to search/i);
+  await specialty.click();
+  await specialty.fill("den");
+
+  // The suggestion list filters to Dentistry; selecting it fills the field.
+  await page.getByRole("option", { name: /dentistry/i }).click();
+  await expect(specialty).toHaveValue("Dentistry");
+});

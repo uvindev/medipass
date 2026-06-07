@@ -22,13 +22,13 @@ import { z } from "zod";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 import { homeForRole, type Role } from "@/lib/roles";
 import { CLINICIAN_TYPES, MEDICAL_SPECIALTIES } from "@/lib/clinician";
+import { Combobox } from "@/components/ui/Combobox";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required").max(80),
   email: z.string().email("Enter a valid email"),
   password: z.string().min(8, "At least 8 characters"),
   country: z.string().max(60).optional(),
-  specialty: z.string().max(80).optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -37,6 +37,7 @@ export function RegisterForm() {
   const router = useRouter();
   const [role, setRole] = useState<Role>("patient");
   const [clinicianType, setClinicianType] = useState<string>(CLINICIAN_TYPES[0]);
+  const [specialty, setSpecialty] = useState("");
   const [hospitals, setHospitals] = useState<string[]>([]);
   const [hospitalInput, setHospitalInput] = useState("");
   const [pending, startTransition] = useTransition();
@@ -63,7 +64,7 @@ export function RegisterForm() {
       if (role === "doctor") {
         meta.clinician_type = clinicianType;
         if (values.country) meta.country = values.country;
-        if (values.specialty) meta.specialty = values.specialty;
+        if (specialty.trim()) meta.specialty = specialty.trim();
         if (hospitals.length) {
           meta.hospitals = hospitals;
           meta.hospital = hospitals[0]; // primary, for audit attribution
@@ -186,18 +187,13 @@ export function RegisterForm() {
               />
             </Field>
             <Field label="Specialty" htmlFor="specialty">
-              <input
+              <Combobox
                 id="specialty"
-                list="specialty-options"
-                {...register("specialty")}
-                className="auth-input"
-                placeholder="Start typing…"
+                value={specialty}
+                onChange={setSpecialty}
+                options={MEDICAL_SPECIALTIES}
+                placeholder="Type to search — e.g. Dentistry"
               />
-              <datalist id="specialty-options">
-                {MEDICAL_SPECIALTIES.map((s) => (
-                  <option key={s} value={s} />
-                ))}
-              </datalist>
             </Field>
           </div>
 
