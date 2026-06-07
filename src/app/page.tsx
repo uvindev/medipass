@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/shared/SiteHeader";
 import { OwnershipFooter } from "@/components/shared/OwnershipFooter";
 import { Badge } from "@/components/ui/Badge";
+import { LiveNetwork } from "@/components/marketing/LiveNetwork";
 
 const PROOFS = [
   { k: "did:t3n", v: "Verifiable identity" },
@@ -131,6 +132,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Live network */}
+      <LiveNetwork />
 
       {/* Problem */}
       <section className="border-b border-neutral-200 bg-white">
