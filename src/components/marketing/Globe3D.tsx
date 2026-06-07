@@ -17,6 +17,9 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import type { GlobeMethods } from "react-globe.gl";
+import { feature } from "topojson-client";
+import type { GeometryCollection, Topology } from "topojson-specification";
+import countriesTopo from "world-atlas/countries-110m.json";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -65,11 +68,18 @@ export function Globe3D() {
 
   const globeMaterial = useMemo(() => {
     const m = new THREE.MeshPhongMaterial();
-    m.color = new THREE.Color("#0a0c11");
-    m.emissive = new THREE.Color("#0a0c11");
-    m.emissiveIntensity = 0.1;
-    m.shininess = 0.7;
+    m.color = new THREE.Color("#0d1017");
+    m.emissive = new THREE.Color("#0b0e14");
+    m.emissiveIntensity = 0.12;
+    m.shininess = 0.6;
     return m;
+  }, []);
+
+  // Country landmasses → rendered as a dotted grid so the globe reads as Earth.
+  const countries = useMemo(() => {
+    const topo = countriesTopo as unknown as Topology;
+    const fc = feature(topo, topo.objects.countries as GeometryCollection);
+    return fc.features;
   }, []);
 
   // Responsive sizing.
@@ -121,13 +131,19 @@ export function Globe3D() {
           backgroundColor="rgba(0,0,0,0)"
           globeMaterial={globeMaterial}
           atmosphereColor="#F7931A"
-          atmosphereAltitude={0.16}
+          atmosphereAltitude={0.15}
+          hexPolygonsData={countries}
+          hexPolygonResolution={3}
+          hexPolygonMargin={0.32}
+          hexPolygonUseDots={true}
+          hexPolygonColor={() => "rgba(247,147,26,0.55)"}
+          hexPolygonAltitude={0.003}
           pointsData={CITIES}
           pointLat="lat"
           pointLng="lng"
-          pointColor={() => "#FFB454"}
-          pointAltitude={0.012}
-          pointRadius={0.32}
+          pointColor={() => "#FFE3B0"}
+          pointAltitude={0.018}
+          pointRadius={0.45}
           pointsMerge={false}
           arcsData={arcs}
           arcStartLat="startLat"
