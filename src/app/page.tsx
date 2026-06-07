@@ -134,7 +134,7 @@ export default function Home() {
 
       {/* Problem */}
       <section className="border-b border-neutral-200 bg-white">
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center">
+        <div className="reveal mx-auto max-w-4xl px-6 py-20 text-center">
           <Badge tone="brand">The problem</Badge>
           <p className="mx-auto mt-5 max-w-3xl text-2xl font-semibold leading-snug tracking-tight sm:text-3xl">
             A traveler collapses in a foreign ER. The doctor needs their{" "}
@@ -150,7 +150,7 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="mx-auto max-w-6xl px-6 py-24">
+      <section className="reveal mx-auto max-w-6xl px-6 py-24">
         <div className="max-w-2xl">
           <Badge tone="neutral">How it works</Badge>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -177,7 +177,7 @@ export default function Home() {
 
       {/* Features */}
       <section className="border-y border-neutral-200 bg-[#fbfbfa]">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="reveal mx-auto max-w-6xl px-6 py-24">
           <div className="max-w-2xl">
             <Badge tone="brand">Capabilities</Badge>
             <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -200,7 +200,7 @@ export default function Home() {
 
       {/* Privacy proof */}
       <section className="mx-auto max-w-6xl px-6 py-24">
-        <div className="grid gap-10 md:grid-cols-2 md:items-center">
+        <div className="reveal grid gap-10 md:grid-cols-2 md:items-center">
           <div>
             <Badge tone="success">Mathematically enforced</Badge>
             <h2 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
@@ -259,7 +259,7 @@ export default function Home() {
 
       {/* Two audiences */}
       <section className="border-y border-neutral-200 bg-white">
-        <div className="mx-auto grid max-w-6xl gap-6 px-6 py-20 md:grid-cols-2">
+        <div className="reveal mx-auto grid max-w-6xl gap-6 px-6 py-20 md:grid-cols-2">
           <Audience
             tag="For patients"
             title="Own your medical identity"
@@ -288,7 +288,7 @@ export default function Home() {
       {/* Built on Terminal 3 */}
       <section className="relative overflow-hidden bg-ink text-white">
         <div className="absolute inset-0 bg-grid opacity-50" />
-        <div className="relative mx-auto max-w-6xl px-6 py-24">
+        <div className="reveal relative mx-auto max-w-6xl px-6 py-24">
           <Badge tone="dark">Built on Terminal 3 Network</Badge>
           <h2 className="mt-4 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
             Real verifiable identity + Agent Auth, live on testnet.
@@ -316,7 +316,7 @@ export default function Home() {
 
       {/* CTA */}
       <section className="mx-auto max-w-6xl px-6 py-24">
-        <div className="relative overflow-hidden rounded-3xl bg-ink px-6 py-20 text-center text-white">
+        <div className="reveal relative overflow-hidden rounded-3xl bg-ink px-6 py-20 text-center text-white">
           <div className="absolute inset-0 bg-grid opacity-40" />
           <div className="glow-brand absolute inset-x-0 top-0 h-80" />
           <div className="pointer-events-none absolute -left-24 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-[#F7931A]/25 blur-[120px]" />
