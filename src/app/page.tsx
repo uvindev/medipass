@@ -150,14 +150,14 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="reveal mx-auto max-w-6xl px-6 py-24">
-        <div className="max-w-2xl">
+      <section className="mx-auto max-w-6xl px-6 py-24">
+        <div className="reveal max-w-2xl">
           <Badge tone="neutral">How it works</Badge>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
             One profile. Disclosed field-by-field, only with your consent.
           </h2>
         </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="stagger mt-12 grid gap-6 md:grid-cols-3">
           {FLOW.map((f, i) => (
             <div key={f.title} className="card p-6">
               <div className="flex items-center gap-3">
@@ -177,14 +177,14 @@ export default function Home() {
 
       {/* Features */}
       <section className="border-y border-neutral-200 bg-[#fbfbfa]">
-        <div className="reveal mx-auto max-w-6xl px-6 py-24">
-          <div className="max-w-2xl">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="reveal max-w-2xl">
             <Badge tone="brand">Capabilities</Badge>
             <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
               Privacy by construction, not by policy.
             </h2>
           </div>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="stagger mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
               <div key={f.title} className="card p-6">
                 <Icon>{f.icon}</Icon>
@@ -259,7 +259,7 @@ export default function Home() {
 
       {/* Two audiences */}
       <section className="border-y border-neutral-200 bg-white">
-        <div className="reveal mx-auto grid max-w-6xl gap-6 px-6 py-20 md:grid-cols-2">
+        <div className="stagger mx-auto grid max-w-6xl gap-6 px-6 py-20 md:grid-cols-2">
           <Audience
             tag="For patients"
             title="Own your medical identity"
