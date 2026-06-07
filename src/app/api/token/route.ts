@@ -13,6 +13,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { getAgentDID } from "@/lib/t3n/identity";
 import { isAppError } from "@/lib/errors";
 import { ownershipHeaders } from "@/lib/watermark";
 
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
       data: {
         patientId: data.patientId,
         patientDID: data.patientDID,
-        agentDID: process.env.T3N_AGENT_DID ?? "",
+        agentDID: await getAgentDID(),
         fields: data.fields,
         allowedHosts: [],
         expiresAt,

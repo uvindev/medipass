@@ -15,6 +15,7 @@ import { tool } from "ai";
 import { z } from "zod";
 import type { CredentialPayload } from "@terminal3/vc_core";
 import { selectiveDisclose } from "@/lib/t3n/credentials";
+import { getAgentDID } from "@/lib/t3n/identity";
 import { validateDataToken, logDataAccess } from "@/lib/db/operations";
 import { db } from "@/lib/db";
 import { AppError } from "@/lib/errors";
@@ -23,8 +24,6 @@ import {
   type MedicalField,
   type MedicalSnapshot,
 } from "@/types/medical";
-
-const AGENT_DID = process.env.T3N_AGENT_DID ?? "";
 
 // ─── Tool 1: verify_patient_did ───────────────────────────────────────────────
 
@@ -97,8 +96,10 @@ export const getMedicalCredentialTool = tool({
   execute: async ({ patientDID, fields }) => {
     // t3nUserId/vcId are validated by the schema; the credential is resolved
     // from the patient's session by DID.
-    // 1. Check authorization before disclosing anything.
-    await validateDataToken(patientDID, AGENT_DID, fields as MedicalField[]);
+    // 1. Check authorization before disclosing anything. The agent DID is the
+    // live did:t3n from the SDK — must match how DataTokens were issued.
+    const agentDID = await getAgentDID();
+    await validateDataToken(patientDID, agentDID, fields as MedicalField[]);
 
     // 2. Resolve the stored BBS+ credential and derive a selective disclosure.
     const session = await db.patientSession.findUnique({
@@ -149,7 +150,7 @@ export const formatMedicalSnapshotTool = tool({
         | string[]
         | undefined,
       verifiedAt: new Date(verifiedAt),
-      issuerDID: AGENT_DID,
+      issuerDID: await getAgentDID(),
       proofValid: true,
     };
 
@@ -228,7 +229,7 @@ export const logDataAccessTool = tool({
       doctorId,
       hospitalName,
       fieldsAccessed: fieldsAccessed as MedicalField[],
-      agentDID: AGENT_DID,
+      agentDID: await getAgentDID(),
       vcId,
       vcCID,
     });
