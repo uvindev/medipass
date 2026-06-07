@@ -16,10 +16,13 @@ const nextConfig = {
     "@terminal3/revoke_vc",
   ],
   // Force the jco WASM component into the serverless function bundle on Vercel.
-  // With node-linker=hoisted (.npmrc) this is a real (non-symlinked) path, so
-  // Vercel can package it without the "symlinked directories" error.
+  // Keyed by the exact SDK-using routes (the "/api/**" glob did not reliably
+  // match App Router route handlers). node-linker=hoisted (.npmrc) keeps this a
+  // real path so Vercel packages it without the "symlinked directories" error.
   outputFileTracingIncludes: {
-    "/api/**": ["./node_modules/@terminal3/t3n-sdk/dist/wasm/**"],
+    "/api/t3n/user": ["./node_modules/@terminal3/**/*.wasm"],
+    "/api/t3n/present": ["./node_modules/@terminal3/**/*.wasm"],
+    "/api/agent": ["./node_modules/@terminal3/**/*.wasm"],
   },
   // Ownership watermarks applied on every HTTP response at the edge.
   async headers() {
