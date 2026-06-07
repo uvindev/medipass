@@ -10,7 +10,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/shared/SiteHeader";
-import { OwnershipFooter } from "@/components/shared/OwnershipFooter";
+import { SiteFooter } from "@/components/shared/SiteFooter";
 import { Badge } from "@/components/ui/Badge";
 import { LiveNetwork } from "@/components/marketing/LiveNetwork";
 
@@ -355,9 +355,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-
-        <OwnershipFooter />
       </section>
+
+      <SiteFooter />
     </main>
   );
 }
