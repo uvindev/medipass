@@ -36,8 +36,9 @@ const COLUMNS: { title: string; links: LinkDef[] }[] = [
   {
     title: "Legal",
     links: [
-      ["License", `${REPO}/blob/main/LICENSE`],
-      ["Security", `${REPO}/blob/main/SECURITY.md`],
+      ["License", "/license"],
+      ["Privacy", "/privacy"],
+      ["Security", "/security"],
       ["Contact", "mailto:uvin95dev@gmail.com"],
     ],
   },
