@@ -1,28 +1,134 @@
 @import "tailwindcss";
 
 /**
- * MediPass — Global Styles
+ * MediPass — Global Styles & Design System
  * Copyright (c) 2026 Uvin Vindula — IAMUVIN (iamuvin.com)
  */
 
 @theme {
   --color-brand: #f7931a;
   --color-brand-dark: #c9740a;
+  --color-brand-light: #ffb454;
+  --color-ink: #0a0a0a;
+  --color-ink-2: #14161c;
+  --color-ink-3: #1c1f28;
+
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 :root {
-  --background: #ffffff;
+  --background: #fbfbfa;
   --foreground: #0a0a0a;
 }
 
 html {
   color-scheme: light;
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ─── Utilities ──────────────────────────────────────────────────────────── */
+
+/* Dotted/grid backdrop for hero + dark panels */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.bg-dots {
+  background-image: radial-gradient(
+    rgba(10, 10, 10, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+/* Radial orange glow */
+.glow-brand {
+  background: radial-gradient(
+    600px circle at 50% 0%,
+    rgba(247, 147, 26, 0.22),
+    transparent 60%
+  );
+}
+
+.text-gradient {
+  background: linear-gradient(120deg, #ffb454, #f7931a 55%, #c9740a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Frosted card */
+.card {
+  background: #ffffff;
+  border: 1px solid rgba(10, 10, 10, 0.08);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgba(10, 10, 10, 0.04),
+    0 8px 24px -16px rgba(10, 10, 10, 0.18);
+}
+
+.card-dark {
+  background: linear-gradient(180deg, #14161c, #0d0f14);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+/* Pill / badge */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Animated cursor blink for the agent console */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.cursor-blink::after {
+  content: "▋";
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+  color: var(--color-brand);
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  70% { transform: scale(1.4); opacity: 0; }
+  100% { opacity: 0; }
+}
+.live-dot {
+  position: relative;
+}
+.live-dot::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.5);
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes float-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation: float-up 0.5s ease-out both;
 }

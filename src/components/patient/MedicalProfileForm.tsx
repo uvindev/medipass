@@ -157,7 +157,7 @@ export function MedicalProfileForm() {
         <select
           value={bloodType}
           onChange={(e) => setBloodType(e.target.value)}
-          className="w-full rounded-md border border-neutral-300 px-3 py-2"
+          className="w-full rounded-lg border border-neutral-300 px-3 py-2.5 outline-none transition focus:border-[#F7931A] focus:ring-2 focus:ring-orange-200"
         >
           {BLOOD_TYPES.map((bt) => (
             <option key={bt} value={bt}>
@@ -223,7 +223,7 @@ function Input(props: {
         onChange={(e) => props.onChange(e.target.value)}
         placeholder={props.placeholder ?? ""}
         required={props.required ?? false}
-        className="w-full rounded-md border border-neutral-300 px-3 py-2"
+        className="w-full rounded-lg border border-neutral-300 px-3 py-2.5 outline-none transition focus:border-[#F7931A] focus:ring-2 focus:ring-orange-200"
       />
     </div>
   );
