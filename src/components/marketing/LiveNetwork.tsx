@@ -116,10 +116,14 @@ export function LiveNetwork() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-ink text-white">
-      <div className="absolute inset-0 bg-grid opacity-40" />
-      <div className="glow-brand absolute inset-x-0 top-0 h-80" />
-      <div className="relative mx-auto max-w-6xl px-6 py-24">
+    <section className="relative overflow-hidden border-y border-white/[0.06] bg-[#08090d] text-white">
+      {/* glowing hairline that separates this from the hero */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#F7931A]/45 to-transparent" />
+      {/* contained glows BEHIND the content — orange behind the globe, blue behind the feed */}
+      <div className="pointer-events-none absolute left-[30%] top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F7931A]/[0.10] blur-[150px]" />
+      <div className="pointer-events-none absolute right-[-6%] top-[62%] h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-[#3b82f6]/[0.08] blur-[150px]" />
+      <div className="absolute inset-0 bg-dots opacity-[0.035]" />
+      <div className="relative mx-auto max-w-6xl px-6 py-20">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <span className="pill bg-white/10 text-white ring-1 ring-white/15">
