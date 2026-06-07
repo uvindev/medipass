@@ -8,7 +8,6 @@ import { type Page, type Locator, expect } from "@playwright/test";
 export interface ProfileInput {
   firstName: string;
   lastName: string;
-  email: string;
   bloodType: string;
   allergies: string;
   medications: string;
@@ -33,7 +32,6 @@ export class SetupPage {
   async fillProfile(p: ProfileInput) {
     await this.page.getByLabel("First name").fill(p.firstName);
     await this.page.getByLabel("Last name").fill(p.lastName);
-    await this.page.getByLabel("Email").fill(p.email);
     await this.page.getByLabel("Blood type").selectOption(p.bloodType);
     await this.page.getByLabel(/allergies/i).fill(p.allergies);
     await this.page.getByLabel(/active medications/i).fill(p.medications);

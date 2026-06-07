@@ -20,8 +20,18 @@ test("ownership headers are present on every response", async ({ request }) => {
   expect(res.headers()["x-copyright"]).toContain("All Rights Reserved");
 });
 
-test("core routes respond 200", async ({ request }) => {
-  for (const path of ["/", "/doctor", "/patient/setup", "/patient/dashboard"]) {
+test("public routes respond 200", async ({ request }) => {
+  for (const path of ["/", "/login", "/register"]) {
     expect((await request.get(path)).status(), path).toBe(200);
+  }
+});
+
+test("protected routes redirect anonymous users to login", async ({
+  request,
+}) => {
+  for (const path of ["/patient/dashboard", "/doctor", "/patient/setup"]) {
+    const res = await request.get(path, { maxRedirects: 0 });
+    expect([302, 307], path).toContain(res.status());
+    expect(res.headers()["location"], path).toContain("/login");
   }
 });
