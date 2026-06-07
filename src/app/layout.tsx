@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_APP_URL ?? "https://medipass.vercel.app",
   ),
   other: {
-    "X-Built-By": "Uvin Vindula — IAMUVIN (iamuvin.com)",
+    "X-Built-By": "Uvin Vindula - IAMUVIN (iamuvin.com)",
     "X-Copyright": "Copyright (c) 2026 Uvin Vindula. All Rights Reserved.",
   },
 };
