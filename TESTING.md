@@ -26,11 +26,28 @@ coverage on every push (`.github/workflows/test.yml`).
 - `src/components/patient/AccessLog.test.tsx` — empty state, disclosed-field
   labels, hospital fallback.
 
-**E2E (manual / live, deferred for CI)** — the full patient → agent →
-disclosure → audit flow runs against real Terminal 3 testnet + Supabase +
-Anthropic, verified on the deployed URL. A Playwright suite is the planned
-follow-up; it is not in CI because it requires live credentials and the WASM
-SDK. Until then the live deployment is the E2E surface.
+**E2E (Playwright, against the live URL)** — `tests/e2e/`:
+- `journey.spec.ts` — the full critical path: patient setup → doctor agent
+  discloses only `blood_type` + `allergies` (asserts medications are withheld)
+  → patient revokes the token → a fresh agent run is blocked.
+- `smoke.spec.ts` — landing loads, ownership headers present, core routes 200.
+
+```bash
+pnpm exec playwright install chromium   # once
+pnpm test:e2e                           # runs against medipass-seven.vercel.app
+E2E_BASE_URL=http://localhost:3000 pnpm test:e2e   # or a local server
+pnpm test:e2e:report                    # open the HTML report
+```
+
+Page Object Model in `tests/e2e/pages/`. Single worker, no retries — each run
+mints a real T3N user and calls Claude, so it costs a few cents and shouldn't be
+parallelized or auto-retried. **Not in CI** for the same reason (live creds +
+cost + the WASM SDK). The deployed URL is the E2E target.
+
+> Note: Playwright's browser binaries don't support every host OS; if
+> `playwright install` reports an unsupported platform, run the E2E from a
+> standard Linux/macOS/Windows machine. The underlying flow is independently
+> verified live.
 
 ## Conventions
 - Behavior over implementation; tests survive refactors.

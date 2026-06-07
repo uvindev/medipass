@@ -85,7 +85,10 @@ export function AgentChat({ initialPatientDID }: AgentChatProps) {
       </button>
 
       {/* Console output */}
-      <div className="min-h-[220px] rounded-xl bg-[#0c0e13] p-4">
+      <div
+        data-testid="agent-console"
+        className="min-h-[220px] rounded-xl bg-[#0c0e13] p-4"
+      >
         {!started ? (
           <div className="flex h-[200px] flex-col items-center justify-center gap-2 text-center">
             <span className="font-mono text-xs text-white/30">

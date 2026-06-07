@@ -153,8 +153,11 @@ export function MedicalProfileForm() {
       />
 
       <div>
-        <label className="mb-1 block text-sm font-medium">Blood type</label>
+        <label htmlFor="blood-type" className="mb-1 block text-sm font-medium">
+          Blood type
+        </label>
         <select
+          id="blood-type"
           value={bloodType}
           onChange={(e) => setBloodType(e.target.value)}
           className="w-full rounded-lg border border-neutral-300 px-3 py-2.5 outline-none transition focus:border-[#F7931A] focus:ring-2 focus:ring-orange-200"
@@ -206,6 +209,13 @@ export function MedicalProfileForm() {
   );
 }
 
+function fieldId(label: string): string {
+  return label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 function Input(props: {
   label: string;
   value: string;
@@ -214,10 +224,14 @@ function Input(props: {
   placeholder?: string;
   required?: boolean;
 }) {
+  const id = fieldId(props.label);
   return (
     <div>
-      <label className="mb-1 block text-sm font-medium">{props.label}</label>
+      <label htmlFor={id} className="mb-1 block text-sm font-medium">
+        {props.label}
+      </label>
       <input
+        id={id}
         type={props.type ?? "text"}
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
