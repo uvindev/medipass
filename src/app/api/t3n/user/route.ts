@@ -27,10 +27,12 @@ export const runtime = "nodejs";
 const bodySchema = z.object({
   firstName: z.string().min(1).max(50),
   lastName: z.string().min(1).max(50),
-  dateOfBirth: z.string().optional(),
+  dateOfBirth: z.string().max(40).optional().default(""),
+  primaryLanguage: z.string().max(40).optional().default(""),
   bloodType: z.string().min(1),
   allergies: z.array(z.string()),
   activeMedications: z.array(z.string()),
+  chronicConditions: z.array(z.string()),
   emergencyContactName: z.string().min(1),
   emergencyContactPhone: z.string().min(1),
 });
@@ -75,6 +77,9 @@ export async function POST(request: NextRequest) {
       bloodType: data.bloodType,
       allergies: data.allergies,
       activeMedications: data.activeMedications,
+      chronicConditions: data.chronicConditions,
+      dateOfBirth: data.dateOfBirth,
+      primaryLanguage: data.primaryLanguage,
       emergencyContactName: data.emergencyContactName,
       emergencyContactPhone: data.emergencyContactPhone,
     });

@@ -11,11 +11,14 @@ import {
 } from "@/types/medical";
 
 describe("medical field registry", () => {
-  it("defines the five disclosable fields", () => {
+  it("defines the disclosable fields", () => {
     expect(MEDICAL_FIELDS).toEqual([
       "blood_type",
       "allergies",
       "active_medications",
+      "chronic_conditions",
+      "date_of_birth",
+      "primary_language",
       "emergency_contact_name",
       "emergency_contact_phone",
     ]);

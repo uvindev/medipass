@@ -12,6 +12,9 @@ export type MedicalField =
   | "blood_type"
   | "allergies"
   | "active_medications"
+  | "chronic_conditions"
+  | "date_of_birth"
+  | "primary_language"
   | "emergency_contact_name"
   | "emergency_contact_phone";
 
@@ -20,6 +23,9 @@ export const MEDICAL_FIELDS: readonly MedicalField[] = [
   "blood_type",
   "allergies",
   "active_medications",
+  "chronic_conditions",
+  "date_of_birth",
+  "primary_language",
   "emergency_contact_name",
   "emergency_contact_phone",
 ] as const;
@@ -29,6 +35,9 @@ export const MEDICAL_FIELD_LABELS: Record<MedicalField, string> = {
   blood_type: "Blood Type",
   allergies: "Allergies",
   active_medications: "Active Medications",
+  chronic_conditions: "Chronic Conditions",
+  date_of_birth: "Date of Birth",
+  primary_language: "Primary Language",
   emergency_contact_name: "Emergency Contact Name",
   emergency_contact_phone: "Emergency Contact Phone",
 };
@@ -38,6 +47,9 @@ export interface MedicalProfile {
   bloodType: string; // e.g. "A+"
   allergies: string[]; // e.g. ["Penicillin", "Latex"]
   activeMedications: string[]; // e.g. ["Metformin 500mg"]
+  chronicConditions: string[]; // e.g. ["Type 2 Diabetes", "Hypertension"]
+  dateOfBirth: string; // ISO date, e.g. "1990-05-12"
+  primaryLanguage: string; // e.g. "English" — cross-border care
   emergencyContactName: string;
   emergencyContactPhone: string;
 }

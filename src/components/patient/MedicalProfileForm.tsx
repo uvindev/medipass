@@ -29,9 +29,12 @@ const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 export function MedicalProfileForm() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [primaryLanguage, setPrimaryLanguage] = useState("");
   const [bloodType, setBloodType] = useState("O+");
   const [allergies, setAllergies] = useState("");
   const [medications, setMedications] = useState("");
+  const [conditions, setConditions] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
@@ -58,9 +61,12 @@ export function MedicalProfileForm() {
         body: JSON.stringify({
           firstName,
           lastName,
+          dateOfBirth,
+          primaryLanguage,
           bloodType,
           allergies: splitList(allergies),
           activeMedications: splitList(medications),
+          chronicConditions: splitList(conditions),
           emergencyContactName: contactName,
           emergencyContactPhone: contactPhone,
         }),
@@ -141,6 +147,21 @@ export function MedicalProfileForm() {
         <Input label="Last name" value={lastName} onChange={setLastName} required />
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Input
+          label="Date of birth"
+          type="date"
+          value={dateOfBirth}
+          onChange={setDateOfBirth}
+        />
+        <Input
+          label="Primary language"
+          value={primaryLanguage}
+          onChange={setPrimaryLanguage}
+          placeholder="English"
+        />
+      </div>
+
       <div>
         <label htmlFor="blood-type" className="mb-1 block text-sm font-medium">
           Blood type
@@ -170,6 +191,12 @@ export function MedicalProfileForm() {
         value={medications}
         onChange={setMedications}
         placeholder="Metformin 500mg"
+      />
+      <Input
+        label="Chronic conditions (comma-separated)"
+        value={conditions}
+        onChange={setConditions}
+        placeholder="Type 2 Diabetes, Hypertension"
       />
 
       <div className="grid gap-4 sm:grid-cols-2">
