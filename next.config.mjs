@@ -28,7 +28,6 @@ const nextConfig = {
     "/api/t3n/user": SDK_TRACE,
     "/api/t3n/present": SDK_TRACE,
     "/api/agent": SDK_TRACE,
-    "/api/health/sdk": SDK_TRACE,
   },
   // Ownership watermarks applied on every HTTP response at the edge.
   async headers() {
