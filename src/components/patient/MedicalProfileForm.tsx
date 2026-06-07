@@ -31,10 +31,15 @@ export function MedicalProfileForm() {
   const [lastName, setLastName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [primaryLanguage, setPrimaryLanguage] = useState("");
+  const [country, setCountry] = useState("");
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
   const [bloodType, setBloodType] = useState("O+");
   const [allergies, setAllergies] = useState("");
   const [medications, setMedications] = useState("");
   const [conditions, setConditions] = useState("");
+  const [injuries, setInjuries] = useState("");
+  const [specialNotes, setSpecialNotes] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
@@ -63,10 +68,15 @@ export function MedicalProfileForm() {
           lastName,
           dateOfBirth,
           primaryLanguage,
+          country,
+          weight,
+          height,
+          specialNotes,
           bloodType,
           allergies: splitList(allergies),
           activeMedications: splitList(medications),
           chronicConditions: splitList(conditions),
+          injuries: splitList(injuries),
           emergencyContactName: contactName,
           emergencyContactPhone: contactPhone,
         }),
@@ -162,6 +172,27 @@ export function MedicalProfileForm() {
         />
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Input
+          label="Country"
+          value={country}
+          onChange={setCountry}
+          placeholder="Singapore"
+        />
+        <Input
+          label="Weight"
+          value={weight}
+          onChange={setWeight}
+          placeholder="70 kg"
+        />
+        <Input
+          label="Height"
+          value={height}
+          onChange={setHeight}
+          placeholder="175 cm"
+        />
+      </div>
+
       <div>
         <label htmlFor="blood-type" className="mb-1 block text-sm font-medium">
           Blood type
@@ -198,6 +229,26 @@ export function MedicalProfileForm() {
         onChange={setConditions}
         placeholder="Type 2 Diabetes, Hypertension"
       />
+      <Input
+        label="Injuries (comma-separated)"
+        value={injuries}
+        onChange={setInjuries}
+        placeholder="Fractured left wrist"
+      />
+
+      <div>
+        <label htmlFor="special-notes" className="mb-1 block text-sm font-medium">
+          Special notes
+        </label>
+        <textarea
+          id="special-notes"
+          value={specialNotes}
+          onChange={(e) => setSpecialNotes(e.target.value)}
+          rows={3}
+          placeholder="Anything a clinician should know"
+          className="w-full rounded-lg border border-neutral-300 px-3 py-2.5 outline-none transition focus:border-[#F7931A] focus:ring-2 focus:ring-orange-200"
+        />
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Input

@@ -89,12 +89,17 @@ export const getMedicalCredentialTool = tool({
           "chronic_conditions",
           "date_of_birth",
           "primary_language",
+          "country",
+          "weight",
+          "height",
+          "injuries",
+          "special_notes",
           "emergency_contact_name",
           "emergency_contact_phone",
         ]),
       )
       .min(1)
-      .max(8),
+      .max(13),
   }),
   execute: async ({ patientDID, fields }) => {
     // t3nUserId/vcId are validated by the schema; the credential is resolved

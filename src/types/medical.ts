@@ -15,6 +15,11 @@ export type MedicalField =
   | "chronic_conditions"
   | "date_of_birth"
   | "primary_language"
+  | "country"
+  | "weight"
+  | "height"
+  | "injuries"
+  | "special_notes"
   | "emergency_contact_name"
   | "emergency_contact_phone";
 
@@ -26,6 +31,11 @@ export const MEDICAL_FIELDS: readonly MedicalField[] = [
   "chronic_conditions",
   "date_of_birth",
   "primary_language",
+  "country",
+  "weight",
+  "height",
+  "injuries",
+  "special_notes",
   "emergency_contact_name",
   "emergency_contact_phone",
 ] as const;
@@ -38,6 +48,11 @@ export const MEDICAL_FIELD_LABELS: Record<MedicalField, string> = {
   chronic_conditions: "Chronic Conditions",
   date_of_birth: "Date of Birth",
   primary_language: "Primary Language",
+  country: "Country",
+  weight: "Weight",
+  height: "Height",
+  injuries: "Injuries",
+  special_notes: "Special Notes",
   emergency_contact_name: "Emergency Contact Name",
   emergency_contact_phone: "Emergency Contact Phone",
 };
@@ -50,6 +65,11 @@ export interface MedicalProfile {
   chronicConditions: string[]; // e.g. ["Type 2 Diabetes", "Hypertension"]
   dateOfBirth: string; // ISO date, e.g. "1990-05-12"
   primaryLanguage: string; // e.g. "English" — cross-border care
+  country: string; // residence / nationality
+  weight: string; // e.g. "70 kg" — dosing
+  height: string; // e.g. "175 cm"
+  injuries: string[]; // current/recent injuries
+  specialNotes: string; // free-text clinical notes
   emergencyContactName: string;
   emergencyContactPhone: string;
 }

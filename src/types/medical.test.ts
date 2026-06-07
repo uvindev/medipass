@@ -19,6 +19,11 @@ describe("medical field registry", () => {
       "chronic_conditions",
       "date_of_birth",
       "primary_language",
+      "country",
+      "weight",
+      "height",
+      "injuries",
+      "special_notes",
       "emergency_contact_name",
       "emergency_contact_phone",
     ]);
