@@ -21,7 +21,7 @@ datasource db {
 model AccessLog {
   id             String   @id @default(cuid())
   patientId      String // T3N user_id (number stored as string)
-  patientDID     String // did:key:z... of the patient
+  patientDID     String // did:t3n:... of the patient
   doctorId       String // session-based doctor identifier
   hospitalName   String? // doctor-provided, optional
   fieldsAccessed String[] // e.g. ["blood_type", "allergies"]
@@ -41,8 +41,8 @@ model AccessLog {
 model DataToken {
   id           String    @id @default(cuid())
   patientId    String // T3N user_id
-  patientDID   String // did:key:z... of the patient
-  agentDID     String // authorized agent DID (our T3N_AGENT_DID)
+  patientDID   String // did:t3n:... of the patient
+  agentDID     String // authorized agent did:t3n (our agent)
   fields       String[] // allowed MedicalField values
   allowedHosts String[] // EHR endpoints (future use — empty in sandbox)
   expiresAt    DateTime  @db.Timestamptz
@@ -79,9 +79,12 @@ model PatientSession {
   id         String   @id @default(cuid())
   email      String   @unique
   t3nUserId  Int // T3N user_id (number)
-  patientDID String   @unique // did:key:z...
-  vcId       String // UUID of their MedicalIdentityVC
-  vcCID      String // IPFS CID
+  patientDID String   @unique // did:t3n:...
+  vcId       String // urn:uuid of their MedicalIdentityVC
+  vcCID      String // T3N credential reference / IPFS CID
+  // Interim: the issued W3C 2.0 BBS+ credential payload, held app-side until
+  // T3N TEE-side credential storage + proof derivation is wired (credentials.ts).
+  credential Json?
   createdAt  DateTime @default(now()) @db.Timestamptz
   updatedAt  DateTime @updatedAt @db.Timestamptz
 

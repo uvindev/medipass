@@ -12,31 +12,52 @@ padded the count.
 
 ---
 
-## BLOCKER
+## HEADLINE FINDING
 
-### B1. Staging API key returns `401 unauthorized` on every endpoint and header scheme
-The provided staging key
-`0x66160ba24c43fc85fdad5f787b40385730f79de2e1713f4ba81d4bdeb08bc438`
-does not authenticate. The host is reachable (`GET /` → `200`) and
-`/v1/user/create` exists (`GET` it → `404 Cannot GET`, i.e. POST-only), but
-every authenticated call fails.
+### B1. The documented REST API does not exist — the live ADK is a WASM SDK with SIWE auth
+The dev-kit instructions describe a REST API: base `https://staging.terminal3.io`,
+`X-API-Token` header, `did:key` only, endpoints `/v1/user/create`,
+`/v1/did/register`, `/v1/vc/issuer/store`, `/v1/vc/issuer/credentials/proof`.
 
-Reproduction:
+None of that matches the live Agent Developer Kit. Every authenticated REST call
+returns `401`:
 ```bash
 KEY=0x66160ba24c43fc85fdad5f787b40385730f79de2e1713f4ba81d4bdeb08bc438
 B=https://staging.terminal3.io
 D='{"profile":{"first_name":"A","last_name":"B","email_address":"t@example.com"}}'
-
-curl -s -w " [%{http_code}]\n" -XPOST $B/v1/user/create -H 'Content-Type: application/json' -H "X-API-Token: $KEY"        -d "$D"
-curl -s -w " [%{http_code}]\n" -XPOST $B/v1/user/create -H 'Content-Type: application/json' -H "Authorization: Bearer $KEY" -d "$D"
-curl -s -w " [%{http_code}]\n" -XPOST $B/v1/user/create -H 'Content-Type: application/json' -H "x-api-key: $KEY"           -d "$D"
-# all → {"errors":[{"code":"unauthorized","message":"Unauthorized request."}]} [401]
+curl -s -w " [%{http_code}]\n" -XPOST $B/v1/user/create -H 'Content-Type: application/json' -H "X-API-Token: $KEY"        -d "$D"   # 401
+curl -s -w " [%{http_code}]\n" -XPOST $B/v1/user/create -H 'Content-Type: application/json' -H "Authorization: Bearer $KEY" -d "$D"  # 401
 ```
-Also tried the key without the `0x` prefix — still `401`.
+The 401 is not a dead key — it's the wrong protocol. The key is **valid**; it is
+an **Ethereum private key** used for SIWE auth inside the SDK's WASM, not a
+bearer token. The real flow (verified live on testnet):
+```ts
+import { T3nClient, loadWasmComponent, createEthAuthInput, eth_get_address, metamask_sign, setEnvironment } from "@terminal3/t3n-sdk";
+setEnvironment("testnet");                            // node: cn-api.sg.testnet.t3n.terminal3.io
+const addr = eth_get_address(process.env.T3N_DEMO_KEY!);
+const c = new T3nClient({ wasmComponent: await loadWasmComponent(),
+  handlers: { EthSign: metamask_sign(addr, undefined, process.env.T3N_DEMO_KEY!) } });
+await c.handshake();
+const did = await c.authenticate(createEthAuthInput(addr)); // did:t3n:e8f80523…
+```
+Corrections to the documented "verified facts":
+- base URL: resolved by `setEnvironment("testnet")`, not `staging.terminal3.io`
+- auth: SIWE via `@terminal3/t3n-sdk`, no `X-API-Token`
+- DID method: **`did:t3n:`**, not `did:key:`
+- VCs: `@terminal3/vc_core` (`prepareCredentialPayload`, BBS+), not `/v1/vc/...`
+- user onboarding: `otpRequest` → `otpVerify` → `submitUserInput`, not `/v1/user/create`
 
-Impact: no participant can complete the live flow (user create → DID register →
-VC store → selective disclosure) with this key. **A working staging key is
-required to verify any T3N call.** This is the single highest-impact issue.
+Impact: anyone following the brief's API spec gets 401 on every call and cannot
+progress. MediPass was re-pointed at the real SDK and the full flow now runs live.
+
+### B1a. The hosted VC SDK docs (issuer/verifier) are missing from the index
+`docs.terminal3.io/llms.txt` lists ADK contract pages and `intro/components/vc.md`
+but omits the `api-reference/vc-sdk/*` pages that search surfaces, and the obvious
+`.md` paths for `issuer-sdk/issue-credential` / `verifier-sdk/verify-presentation`
+return `404`. `intro/components/vc.md` itself states the "specific SDK package
+names, function names, and contract addresses are not detailed." There is no
+copy-pasteable example of issuing a VC and deriving a selective-disclosure
+presentation — the single most important flow for an identity agent.
 
 ---
 
@@ -127,7 +148,8 @@ The `z6Mk` prefix guidance is correct; the length figure is not.
 
 | # | Severity | Area |
 |---|----------|------|
-| B1 | Blocker | Auth — dead staging key |
+| B1 | Blocker | Documented REST API doesn't exist (live ADK is WASM SDK + SIWE) |
+| B1a | High | Hosted VC SDK (issuer/verifier) docs missing/404, no issue+disclose example |
 | B2 | High | AI SDK version mismatch |
 | B3 | High | noble-curves version drift |
 | B4 | High | tsconfig vs sample code |
@@ -140,5 +162,8 @@ The `z6Mk` prefix guidance is correct; the length figure is not.
 | B11 | Low | Deprecated `next lint` |
 | B12 | Low | `did:key` length figure |
 
-The blocker (B1) prevents any live verification of the T3N happy path. Please
-issue a working staging key so the rest can be confirmed end-to-end.
+B1 cost the most time: the documented API is a different (non-existent) protocol
+from the live ADK. Once re-pointed at `@terminal3/t3n-sdk` + `@terminal3/vc_core`,
+the full flow runs live on testnet (auth → `did:t3n` → BBS+ credential →
+selective disclosure). The one remaining gap is B1a — the issuer/verifier VC SDK
+docs needed to wire the TEE-side proof derivation.

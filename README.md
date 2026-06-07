@@ -22,9 +22,9 @@ Built for the **Terminal 3 Agent Dev Kit Bounty Challenge**.
 | Framework | Next.js 15 (App Router), React 19, TypeScript strict (`exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`) |
 | Styling   | Tailwind CSS v4 |
 | Agent     | Vercel AI SDK v4 + `@ai-sdk/anthropic`, `claude-sonnet-4-20250514`, temperature 0, `maxSteps: 10` |
-| Identity  | `@noble/curves` (Ed25519), `multiformats` (`did:key`), keccak-256 wallet derivation |
+| Identity  | `@terminal3/t3n-sdk` (WASM + SIWE → `did:t3n`), `@terminal3/vc_core` (W3C 2.0 BBS+ VCs) |
 | Data      | Prisma + Supabase PostgreSQL |
-| Network   | Terminal 3 Network staging API |
+| Network   | Terminal 3 Network — live testnet (`cn-api.sg.testnet.t3n.terminal3.io`) |
 | Email     | Resend |
 | Deploy    | Vercel |
 
@@ -80,13 +80,18 @@ See [.env.example](./.env.example). Provisioned externally:
 
 ## Status
 
+Integrated against the **real** T3N ADK (`@terminal3/t3n-sdk` + `@terminal3/vc_core`),
+verified live on testnet. The brief's REST/`X-API-Token` API does not exist — see
+[BUGS.md](./BUGS.md) B1.
+
 | Gate | State |
 |------|-------|
 | `pnpm typecheck` | ✅ zero errors |
 | `pnpm lint` | ✅ zero warnings |
 | `pnpm build` | ✅ 16 routes, succeeds |
-| Crypto / `did:key` | ✅ verified — emits valid `did:key:z6Mk…`, 40-hex wallet |
-| Live T3N flow | ⛔ **blocked** — the API key in the brief returns `401 unauthorized` on every endpoint/header variant. Needs a fresh staging key. See [BUGS.md](./BUGS.md). |
+| Agent + patient `did:t3n` (SIWE) | ✅ live testnet |
+| BBS+ credential + selective disclosure | ✅ verified (`pnpm test:t3n`) |
+| TEE-side proof derivation (issuer contract) | ⏳ seam — needs `T3N_VC_ISSUER_SCRIPT` |
 | Supabase / agent / email | ⏳ wired, not yet run end-to-end (credentials not provisioned) |
 
 ## Ownership protection

@@ -32,10 +32,9 @@ Four tools, executed in a strict order enforced by the system prompt:
 
 ## How it maps to the judging criteria
 
-- **Real T3N integration** — `did:key` generation (W3C multicodec `0xed01`),
-  keccak-256 wallet derivation, user create, DID register, VC store (W3C VC
-  Data Model v2, BBS+ cryptosuite), and selective presentation
-  (`vcIdFields` with `urn:uuid:` keys). All wired exactly to the documented API.
+- **Real T3N integration** — live `did:t3n` minting via the SDK's WASM + SIWE
+  handshake, W3C 2.0 BBS+ `MedicalIdentityCredential` via `vc_core`, and
+  field-level selective disclosure. Proven against testnet, not mocked.
 - **Agent stability** — temperature 0 + an explicit ordered tool contract means
   deterministic tool selection.
 - **Privacy** — selective disclosure is the core; the doctor's agent is
@@ -53,35 +52,47 @@ Four tools, executed in a strict order enforced by the system prompt:
 
 ## Verification status
 
+Integrated against the **real** T3N Agent Developer Kit (`@terminal3/t3n-sdk` +
+`@terminal3/vc_core`), not the REST API the original brief described (which does
+not exist — see BUGS.md). Verified live on **testnet**
+(`https://cn-api.sg.testnet.t3n.terminal3.io`).
+
 | Gate | Result |
 |------|--------|
 | `pnpm typecheck` | ✅ zero errors |
 | `pnpm lint` | ✅ zero warnings/errors |
 | `pnpm build` | ✅ production build, 16 routes |
-| Ed25519 `did:key` generation | ✅ verified — valid `did:key:z6Mk…`, 40-hex wallet |
-| Live T3N happy path | ⛔ **blocked** — the bundled staging key returns `401` on every endpoint and auth header. See **BUGS.md → B1**. A working key is needed to confirm user-create → DID-register → VC-store → presentation end-to-end. |
-| Supabase / Anthropic / Resend | ⏳ wired; not run end-to-end (credentials not yet provisioned in this build) |
+| Agent SIWE auth → `did:t3n` | ✅ live testnet — `did:t3n:e8f80523…` |
+| Patient identity (fresh key → `did:t3n`) | ✅ live testnet |
+| BBS+ `MedicalIdentityCredential` (`vc_core`) | ✅ W3C 2.0, `bbs-2023` |
+| Selective disclosure (withholds unrequested fields) | ✅ verified (`pnpm test:t3n`) |
+| TEE-side VC sign+store + ZK proof derivation | ⏳ seam — `executeAndDecode` to the issuer contract; wires in once `T3N_VC_ISSUER_SCRIPT` is known |
+| Supabase / Anthropic / Resend | ⏳ wired; not run e2e (credentials not provisioned) |
 
-The code is complete and compiles/builds clean. The only thing standing between
-this and a green live demo is a valid `T3N_API_KEY` (and the Supabase/Anthropic/
-Resend credentials), all read from `.env.local`.
+`pnpm test:t3n` runs the full live flow: agent auth → patient `did:t3n` → BBS+
+credential → selective disclosure of `blood_type` + `allergies` only (confirms
+`active_medications` is withheld). The remaining work is the TEE issuer-contract
+call for the cryptographic proof; the data-layer disclosure guarantee already
+holds.
 
 ## Run it
 
 ```bash
 pnpm install
-cp .env.example .env.local     # fill ANTHROPIC_API_KEY, DATABASE_URL, DIRECT_URL,
-                               # RESEND_API_KEY, NEXTAUTH_SECRET, and a valid T3N_API_KEY
-pnpm setup:agent               # registers the agent DID, prints T3N_AGENT_* vars
+cp .env.example .env.local     # T3N_DEMO_KEY is the ADK key; also fill
+                               # ANTHROPIC_API_KEY, DATABASE_URL, DIRECT_URL,
+                               # RESEND_API_KEY, NEXTAUTH_SECRET
+pnpm test:t3n                  # live testnet e2e: auth → did:t3n → BBS+ VC → disclosure
+pnpm setup:agent               # prints the agent did:t3n for T3N_AGENT_DID
 pnpm db:push                   # create Supabase tables
 pnpm dev                       # http://localhost:3000
-pnpm test:t3n                  # live T3N staging smoke test (needs a valid key)
 ```
 
 ## Repository layout
 
-- `src/lib/crypto/keys.ts` — Ed25519 + `did:key` + wallet derivation.
-- `src/lib/t3n/*` — typed T3N client (`X-API-Token`), users, DID, credentials.
+- `src/lib/t3n/sdk.ts` — WASM-cached SDK wrapper; SIWE auth → `did:t3n`.
+- `src/lib/t3n/identity.ts` — patient + agent `did:t3n` minting.
+- `src/lib/t3n/credentials.ts` — `vc_core` BBS+ credential + selective disclosure.
 - `src/lib/agent/*` — the four tools + system prompt.
 - `src/app/api/*` — agent stream, T3N user/present, token issue/revoke, canary,
   patient dashboard read.

@@ -3,8 +3,7 @@
  * Copyright (c) 2026 Uvin Vindula — IAMUVIN (iamuvin.com)
  *
  * POST /api/t3n/present
- * Generates a BBS+ selective VC presentation.
- * Called by the agent tool — not directly by the doctor UI.
+ * Derives a BBS+ selective-disclosure presentation for a stored credential.
  *
  * @author Uvin Vindula (IAMUVIN)
  * @website https://iamuvin.com
@@ -13,7 +12,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { generateSelectivePresentation } from "@/lib/t3n/credentials";
+import type { CredentialPayload } from "@terminal3/vc_core";
+import { selectiveDisclose } from "@/lib/t3n/credentials";
+import { db } from "@/lib/db";
 import { isAppError } from "@/lib/errors";
 import { ownershipHeaders } from "@/lib/watermark";
 
@@ -38,8 +39,18 @@ export async function POST(request: NextRequest) {
   try {
     const data = bodySchema.parse(await request.json());
 
-    const presentation = await generateSelectivePresentation(
-      data.vcId,
+    const session = await db.patientSession.findFirst({
+      where: { vcId: data.vcId },
+    });
+    if (!session?.credential) {
+      return NextResponse.json(
+        { error: "T3N_VC_PRESENT_FAILED" },
+        { status: 404, headers: ownershipHeaders },
+      );
+    }
+
+    const presentation = selectiveDisclose(
+      session.credential as unknown as CredentialPayload,
       data.fields,
     );
 
@@ -54,7 +65,6 @@ export async function POST(request: NextRequest) {
         { status: 422, headers: ownershipHeaders },
       );
     }
-
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500, headers: ownershipHeaders },

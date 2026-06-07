@@ -3,7 +3,7 @@
  * Copyright (c) 2026 Uvin Vindula — IAMUVIN (iamuvin.com)
  *
  * One-time intake. POSTs to /api/t3n/user which creates the T3N user,
- * registers the did:key, stores the BBS+ MedicalIdentityVC, and issues a
+ * mints the did:t3n, issues the BBS+ MedicalIdentityVC, and creates a
  * default DataToken. The returned DID + private key are shown once for the
  * patient to save.
  *

@@ -20,7 +20,7 @@ export const runtime = "nodejs";
 
 const issueSchema = z.object({
   patientId: z.string(),
-  patientDID: z.string().regex(/^did:key:z/),
+  patientDID: z.string().regex(/^did:t3n:/),
   fields: z
     .array(
       z.enum([

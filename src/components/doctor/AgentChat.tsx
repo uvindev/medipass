@@ -33,8 +33,8 @@ export function AgentChat({ initialPatientDID }: AgentChatProps) {
   });
 
   function handleLookup() {
-    if (!patientDID.startsWith("did:key:")) {
-      alert("Invalid DID format. Must start with did:key:");
+    if (!patientDID.startsWith("did:t3n:")) {
+      alert("Invalid DID format. Must start with did:t3n:");
       return;
     }
 
@@ -52,7 +52,7 @@ export function AgentChat({ initialPatientDID }: AgentChatProps) {
           type="text"
           value={patientDID}
           onChange={(e) => setPatientDID(e.target.value)}
-          placeholder="did:key:z..."
+          placeholder="did:t3n:..."
           className="rounded-md border border-neutral-300 px-3 py-2 font-mono text-sm"
         />
         <input

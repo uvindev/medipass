@@ -13,7 +13,8 @@
 
 import { tool } from "ai";
 import { z } from "zod";
-import { generateSelectivePresentation } from "@/lib/t3n/credentials";
+import type { CredentialPayload } from "@terminal3/vc_core";
+import { selectiveDisclose } from "@/lib/t3n/credentials";
 import { validateDataToken, logDataAccess } from "@/lib/db/operations";
 import { db } from "@/lib/db";
 import { AppError } from "@/lib/errors";
@@ -38,7 +39,7 @@ export const verifyPatientDIDTool = tool({
   description:
     "Verify that a patient's DID is registered on Terminal 3 Network and retrieve their T3N user ID. Must be called first before any data access.",
   parameters: z.object({
-    did: z.string().regex(/^did:key:z/, "Must be a valid did:key DID"),
+    did: z.string().regex(/^did:t3n:/, "Must be a valid did:t3n DID"),
   }),
   execute: async ({ did }) => {
     const session = await db.patientSession.findUnique({
@@ -77,7 +78,7 @@ export const getMedicalCredentialTool = tool({
   description:
     "Retrieve specific medical fields from the patient's verified credential using selective disclosure. Only returns fields the patient has authorized. Must call verify_patient_did first.",
   parameters: z.object({
-    patientDID: z.string().regex(/^did:key:z/),
+    patientDID: z.string().regex(/^did:t3n:/),
     t3nUserId: z.number().int().positive(),
     vcId: z.string().uuid(),
     fields: z
@@ -93,14 +94,22 @@ export const getMedicalCredentialTool = tool({
       .min(1)
       .max(5),
   }),
-  execute: async ({ patientDID, vcId, fields }) => {
-    // t3nUserId is validated by the schema above but not needed here —
-    // the VC presentation is keyed by vcId, not the numeric user id.
-    // Check authorization before calling T3N
+  execute: async ({ patientDID, fields }) => {
+    // t3nUserId/vcId are validated by the schema; the credential is resolved
+    // from the patient's session by DID.
+    // 1. Check authorization before disclosing anything.
     await validateDataToken(patientDID, AGENT_DID, fields as MedicalField[]);
 
-    const presentation = await generateSelectivePresentation(
-      vcId,
+    // 2. Resolve the stored BBS+ credential and derive a selective disclosure.
+    const session = await db.patientSession.findUnique({
+      where: { patientDID },
+    });
+    if (!session?.credential) {
+      throw new AppError("T3N_VC_PRESENT_FAILED", { patientDID }, "No credential on file");
+    }
+
+    const presentation = selectiveDisclose(
+      session.credential as unknown as CredentialPayload,
       fields as MedicalField[],
     );
 
@@ -109,7 +118,7 @@ export const getMedicalCredentialTool = tool({
       disclosedFields: presentation.disclosedFields,
       disclosedData: presentation.disclosedData,
       verifiedAt: presentation.verifiedAt.toISOString(),
-      proofType: "BBS+ DataIntegrityProof",
+      proofType: "BBS+ DataIntegrityProof (bbs-2023)",
     };
   },
 });

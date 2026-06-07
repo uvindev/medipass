@@ -23,7 +23,7 @@ export default function RegisterPage() {
         Create your identity
       </h1>
       <p className="mt-2 text-neutral-600">
-        One intake form provisions a Terminal 3 user, a did:key DID, and a
+        One intake form provisions a Terminal 3 identity, a did:t3n, and a
         BBS+-signed medical credential.
       </p>
 
