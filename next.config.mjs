@@ -15,13 +15,11 @@ const nextConfig = {
     "@terminal3/vc_core",
     "@terminal3/revoke_vc",
   ],
-  // Force the jco WASM component into the serverless function bundle on Vercel —
-  // nft doesn't follow the .wasm referenced by the generated loader otherwise.
+  // Force the jco WASM component into the serverless function bundle on Vercel.
+  // With node-linker=hoisted (.npmrc) this is a real (non-symlinked) path, so
+  // Vercel can package it without the "symlinked directories" error.
   outputFileTracingIncludes: {
-    "/api/**": [
-      "./node_modules/@terminal3/t3n-sdk/dist/wasm/**",
-      "./node_modules/.pnpm/@terminal3+t3n-sdk@*/node_modules/@terminal3/t3n-sdk/dist/wasm/**",
-    ],
+    "/api/**": ["./node_modules/@terminal3/t3n-sdk/dist/wasm/**"],
   },
   // Ownership watermarks applied on every HTTP response at the edge.
   async headers() {
