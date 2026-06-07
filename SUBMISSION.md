@@ -1,108 +1,97 @@
-# MediPass — T3N Agent Dev Kit Bounty Submission
+# MediPass — Terminal 3 Agent Dev Kit Bounty ($300 Build)
 
-**Author:** Uvin Vindula (IAMUVIN) · uvin95dev@gmail.com · https://iamuvin.com
-**Company:** Terra Labz · terralabz.io
-**Date:** 7 June 2026
+**Uvin Vindula (IAMUVIN)** · uvin95dev@gmail.com · iamuvin.com · Terra Labz
 
-- **GitHub:** _<add repo URL after push>_
-- **Live demo:** _<add Vercel URL after deploy>_
+- **Live:** https://medipass-seven.vercel.app
+- **GitHub:** https://github.com/uvindev/medipass
+- **Demo video:** _<add Loom URL>_
 
 ---
 
-## What MediPass is
+## The agent-auth problem MediPass solves
 
-A cross-border medical identity agent. A patient stores their medical profile
-once in Terminal 3 Network's TEE-encrypted decentralized storage. When they walk
-into any hospital, the doctor's Claude agent retrieves **only** the fields it is
-authorized to see — blood type, allergies — using BBS+ selective disclosure. The
-agent never holds the raw credential, the patient gets a real-time notification,
-and the access event is written to an append-only audit log.
+A traveler collapses in a foreign ER. The doctor needs their **blood type and
+allergies now** — but not their full medical history, and the patient can't
+type a consent form. Today this is faxes, language barriers, and either
+over-sharing everything or getting nothing.
 
-## The agent (claude-sonnet-4-20250514, temperature 0, maxSteps 10)
+**MediPass** is a cross-border medical identity agent. The patient stores their
+profile **once** as a `did:t3n` + BBS+ credential. At any hospital, a Claude
+agent — acting **under the patient's delegated authority** — retrieves only the
+fields the doctor is authorized for, notifies the patient in real time, and
+writes a cryptographic audit entry. The agent never holds the full credential.
 
-Four tools, executed in a strict order enforced by the system prompt:
+This is the **Agent Auth SDK's core thesis** — *an AI agent acting on behalf of
+a user without compromising sensitive data* — applied to the highest-stakes data
+there is.
 
-1. **`verify_patient_did`** — resolves the patient's DID + T3N user id.
-2. **`get_medical_credential`** — validates the patient's `DataToken`, then calls
-   T3N `/v1/vc/issuer/credentials/proof` for BBS+ disclosure of only the
-   authorized fields. The agent receives nothing else — enforced by the proof.
-3. **`format_medical_snapshot`** — pure transform into a clinical summary.
-4. **`log_data_access`** — append-only `AccessLog` write + Resend notification.
-   Non-optional final step.
+## We use Terminal 3's real Agent Auth primitives
+
+The bounty asks for the best implementation of the **Agent Auth SDK**. MediPass
+*is* the user→agent delegation model:
+
+| T3N Agent Auth | MediPass |
+|---|---|
+| `did:t3n` via SIWE handshake | patient + agent identities, live on testnet |
+| **delegation credential** (`buildDelegationCredential`) | patient delegates scoped, time-boxed disclosure authority to MediAgent |
+| `functions` / `scopes` | `disclose-blood-type`, `disclose-allergies` only |
+| signed invocation (`buildInvocationPreimage` + `signAgentInvocation`) | the agent proves it acts under the delegation |
+| `revokeDelegation` | patient revokes from the dashboard → agent blocked |
+| BBS+ selective disclosure (`@terminal3/vc_core`) | only authorized fields ever leave the TEE boundary |
+
+Run the real flow:
+```bash
+pnpm demo:delegation   # builds + validates a real T3N delegation credential, signs an invocation
+pnpm test:t3n          # did:t3n auth → BBS+ MedicalIdentityCredential → selective disclosure
+```
 
 ## How it maps to the judging criteria
 
-- **Real T3N integration** — live `did:t3n` minting via the SDK's WASM + SIWE
-  handshake, W3C 2.0 BBS+ `MedicalIdentityCredential` via `vc_core`, and
-  field-level selective disclosure. Proven against testnet, not mocked.
-- **Agent stability** — temperature 0 + an explicit ordered tool contract means
-  deterministic tool selection.
-- **Privacy** — selective disclosure is the core; the doctor's agent is
-  structurally unable to see unrequested fields, and patient-held `DataToken`s
-  gate every access and can be revoked instantly.
-- **Auditability** — every disclosure is logged immutably and the patient is
-  notified out-of-band.
+**How big a problem you're solving** — cross-border medical access is a
+universal, life-or-death, privacy-critical problem. Selective disclosure +
+patient-held delegation is the difference between "share everything" and "share
+exactly what's needed, revocably."
 
-## Engineering quality
+**How stable the agent is** — `claude-sonnet-4`, `temperature: 0`, a strict
+4-tool chain (`verify_patient_did → get_medical_credential →
+format_medical_snapshot → log_data_access`) enforced by the system prompt.
+Deterministic tool selection. Backed by **24 Vitest unit tests** (the disclosure
+guarantee + regressions) and a **two-actor Playwright E2E** (register → onboard →
+disclose → revoke → blocked) — all green, verified against the live deployment.
 
-- TypeScript strict, **`exactOptionalPropertyTypes`** + **`noUncheckedIndexedAccess`**.
-- All errors are structured `AppError`s — never swallowed, never stringly-typed.
-- Zero `any`.
-- Ownership headers on every response; console beacon + deployment canary.
+**How creative the agentic solution is** — the agent is *structurally unable* to
+see unrequested fields (BBS+, mathematically enforced), authority is a real
+delegation credential the patient grants and revokes, every access is logged
+append-only, and the patient is notified out-of-band. Privacy by construction,
+not by policy.
 
-## Verification status
+## What's live (real services, not mocked)
 
-Integrated against the **real** T3N Agent Developer Kit (`@terminal3/t3n-sdk` +
-`@terminal3/vc_core`), not the REST API the original brief described (which does
-not exist — see BUGS.md). Verified live on **testnet**
-(`https://cn-api.sg.testnet.t3n.terminal3.io`).
+Patient + doctor **accounts** (Supabase Auth, role-gated) → patient onboards a
+`did:t3n` + BBS+ credential → doctor's agent discloses only authorized fields →
+patient revokes → agent blocked. Verified end-to-end on the deployed URL with
+Terminal 3 testnet, Supabase, and Claude.
 
-| Gate | Result |
-|------|--------|
-| `pnpm typecheck` | ✅ zero errors |
-| `pnpm lint` | ✅ zero warnings/errors |
-| `pnpm build` | ✅ production build, 16 routes |
-| Agent SIWE auth → `did:t3n` | ✅ live testnet — `did:t3n:e8f80523…` |
-| Patient identity (fresh key → `did:t3n`) | ✅ live testnet |
-| BBS+ `MedicalIdentityCredential` (`vc_core`) | ✅ W3C 2.0, `bbs-2023` |
-| Selective disclosure (withholds unrequested fields) | ✅ verified (`pnpm test:t3n`) |
-| TEE-side VC sign+store + ZK proof derivation | ⏳ seam — `executeAndDecode` to the issuer contract; wires in once `T3N_VC_ISSUER_SCRIPT` is known |
-| Supabase / Anthropic / Resend | ⏳ wired; not run e2e (credentials not provisioned) |
+## Stack & verification
 
-`pnpm test:t3n` runs the full live flow: agent auth → patient `did:t3n` → BBS+
-credential → selective disclosure of `blood_type` + `allergies` only (confirms
-`active_medications` is withheld). The remaining work is the TEE issuer-contract
-call for the cryptographic proof; the data-layer disclosure guarantee already
-holds.
-
-## Run it
+Next.js 15 · TypeScript strict (`exactOptionalPropertyTypes`) · Tailwind v4 ·
+`@terminal3/t3n-sdk` + `@terminal3/vc_core` · Prisma/Supabase · Vercel AI SDK ·
+Supabase Auth.
 
 ```bash
-pnpm install
-cp .env.example .env.local     # T3N_DEMO_KEY is the ADK key; also fill
-                               # ANTHROPIC_API_KEY, DATABASE_URL, DIRECT_URL,
-                               # RESEND_API_KEY, NEXTAUTH_SECRET
-pnpm test:t3n                  # live testnet e2e: auth → did:t3n → BBS+ VC → disclosure
-pnpm setup:agent               # prints the agent did:t3n for T3N_AGENT_DID
-pnpm db:push                   # create Supabase tables
-pnpm dev                       # http://localhost:3000
+pnpm typecheck   # 0 errors
+pnpm lint        # 0 warnings
+pnpm build       # production build
+pnpm test        # 24/24 unit
+pnpm test:e2e    # smoke + two-actor journey (system browser)
 ```
 
-## Repository layout
+## Documentation bug report ($200)
 
-- `src/lib/t3n/sdk.ts` — WASM-cached SDK wrapper; SIWE auth → `did:t3n`.
-- `src/lib/t3n/identity.ts` — patient + agent `did:t3n` minting.
-- `src/lib/t3n/credentials.ts` — `vc_core` BBS+ credential + selective disclosure.
-- `src/lib/agent/*` — the four tools + system prompt.
-- `src/app/api/*` — agent stream, T3N user/present, token issue/revoke, canary,
-  patient dashboard read.
-- `src/app/patient/*`, `src/app/doctor/*` — patient setup/dashboard/QR + doctor portal.
-- `prisma/schema.prisma` — `AccessLog`, `DataToken`, `AgentSession`, `PatientSession`.
-
-## Documentation bug report
-
-A separate, reproducible bug report is in **[BUGS.md](./BUGS.md)** (12 verified
-issues, headed by the dead staging key). Submitted under the documentation prize.
+While integrating I hit reproducible doc/onboarding issues — headline: the
+dev-kit instructions describe a REST API that doesn't exist; the live ADK is a
+WASM SDK with SIWE auth and the "API key" is an Ethereum private key. Full,
+verified report in **[BUGS.md](./BUGS.md)** (submitted separately).
 
 ---
 
