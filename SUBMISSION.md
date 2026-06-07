@@ -67,10 +67,17 @@ not by policy.
 
 ## What's live (real services, not mocked)
 
-Patient + doctor **accounts** (Supabase Auth, role-gated) → patient onboards a
-`did:t3n` + BBS+ credential → doctor's agent discloses only authorized fields →
-patient revokes → agent blocked. Verified end-to-end on the deployed URL with
-Terminal 3 testnet, Supabase, and Claude.
+Patient + clinician **accounts** (Supabase Auth, role-gated). Patients hold a
+rich, **13-field** medical identity (blood type, allergies, medications, chronic
+conditions, injuries, DOB, primary language, country, weight, height, special
+notes, emergency contact) — all selectively disclosable, with the default grant
+just blood type + allergies. Clinicians register with a type (incl. **medical
+student**), country, specialty (type-ahead), and multiple hospitals.
+
+Flow: patient onboards a `did:t3n` + BBS+ credential → clinician's agent
+discloses only authorized fields (withholds the other 11) → patient revokes →
+agent blocked. Verified end-to-end on the deployed URL with Terminal 3 testnet,
+Supabase Auth + DB, and Claude.
 
 ## Stack & verification
 
