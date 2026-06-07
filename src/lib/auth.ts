@@ -24,6 +24,10 @@ export interface AuthedUser {
   role: Role;
   name: string;
   hospital?: string | undefined;
+  clinicianType?: string | undefined;
+  country?: string | undefined;
+  specialty?: string | undefined;
+  hospitals?: string[] | undefined;
 }
 
 export function roleOf(user: User | null): Role | null {
@@ -48,5 +52,9 @@ export async function getSessionUser(): Promise<AuthedUser | null> {
     role,
     name: (meta["name"] as string) ?? user.email,
     hospital: meta["hospital"] as string | undefined,
+    clinicianType: meta["clinician_type"] as string | undefined,
+    country: meta["country"] as string | undefined,
+    specialty: meta["specialty"] as string | undefined,
+    hospitals: meta["hospitals"] as string[] | undefined,
   };
 }

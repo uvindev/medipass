@@ -21,17 +21,19 @@ export class AuthPage {
   /** Registers a new account and waits for the post-signup redirect home. */
   async register(acc: Account) {
     await this.page.goto("/register");
+    const tab = acc.role === "doctor" ? "Clinician" : "Patient";
     await this.page
-      .getByRole("button", { name: new RegExp(`^${acc.role}$`, "i") })
+      .getByRole("button", { name: new RegExp(`^${tab}$`) })
       .click();
     await this.page.getByLabel("Full name").fill(acc.name);
     await this.page.getByLabel("Email").fill(acc.email);
     await this.page.getByLabel("Password").fill(acc.password);
     if (acc.role === "doctor" && acc.hospital) {
-      await this.page.getByLabel(/hospital/i).fill(acc.hospital);
+      await this.page.getByLabel(/hospitals/i).fill(acc.hospital);
+      await this.page.getByRole("button", { name: /^add$/i }).click();
     }
     await this.page
-      .getByRole("button", { name: /create (patient|doctor) account/i })
+      .getByRole("button", { name: /create (patient|clinician) account/i })
       .click();
     await this.page.waitForURL(
       acc.role === "doctor" ? "**/doctor" : "**/patient/dashboard",

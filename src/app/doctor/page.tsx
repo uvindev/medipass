@@ -7,8 +7,17 @@ import { SiteHeader } from "@/components/shared/SiteHeader";
 import { OwnershipFooter } from "@/components/shared/OwnershipFooter";
 import { Badge } from "@/components/ui/Badge";
 import { PatientLookup } from "@/components/doctor/PatientLookup";
+import { getSessionUser } from "@/lib/auth";
 
-export default function DoctorPage() {
+export default async function DoctorPage() {
+  const clinician = await getSessionUser();
+  const profileBits = [
+    clinician?.clinicianType,
+    clinician?.specialty,
+    clinician?.hospitals?.join(", ") || clinician?.hospital,
+    clinician?.country,
+  ].filter(Boolean);
+
   return (
     <main className="min-h-screen bg-[#fbfbfa]">
       <SiteHeader />
@@ -20,6 +29,17 @@ export default function DoctorPage() {
             <h1 className="mt-3 text-3xl font-bold tracking-tight">
               Retrieve verified patient data
             </h1>
+            {clinician && (
+              <p className="mt-2 text-sm font-medium text-neutral-700">
+                {clinician.name}
+                {profileBits.length > 0 && (
+                  <span className="text-neutral-400">
+                    {" "}
+                    · {profileBits.join(" · ")}
+                  </span>
+                )}
+              </p>
+            )}
             <p className="mt-2 max-w-xl text-neutral-600">
               Enter a patient&apos;s DID. MediAgent verifies it on Terminal 3,
               discloses only authorized fields, and logs the access — you never
