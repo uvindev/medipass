@@ -1,40 +1,35 @@
 /**
  * MediPass — Register
  * Copyright (c) 2026 Uvin Vindula — IAMUVIN (iamuvin.com)
- *
- * Routes to the one-time medical profile setup, which provisions the T3N
- * identity, DID, and BBS+ credential.
- *
- * @author Uvin Vindula (IAMUVIN)
- * @website https://iamuvin.com
- * @company Terra Labz — terralabz.io
  */
 
-import Link from "next/link";
+import { Suspense } from "react";
+import { SiteHeader } from "@/components/shared/SiteHeader";
 import { OwnershipFooter } from "@/components/shared/OwnershipFooter";
+import { Badge } from "@/components/ui/Badge";
+import { RegisterForm } from "@/components/auth/RegisterForm";
 
 export default function RegisterPage() {
   return (
-    <main className="mx-auto max-w-md px-6 py-16">
-      <Link href="/" className="text-sm text-neutral-500 hover:text-[#F7931A]">
-        ← MediPass
-      </Link>
-      <h1 className="mt-4 text-3xl font-bold tracking-tight">
-        Create your identity
-      </h1>
-      <p className="mt-2 text-neutral-600">
-        One intake form provisions a Terminal 3 identity, a did:t3n, and a
-        BBS+-signed medical credential.
-      </p>
+    <main className="min-h-screen bg-[#fbfbfa]">
+      <SiteHeader />
+      <div className="mx-auto max-w-md px-6 py-12">
+        <Badge tone="brand">Create your account</Badge>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight">
+          Join MediPass
+        </h1>
+        <p className="mt-2 text-neutral-600">
+          Patients carry their identity; clinicians retrieve it. Pick your role.
+        </p>
 
-      <Link
-        href="/patient/setup"
-        className="mt-8 inline-block rounded-md bg-[#F7931A] px-5 py-3 font-semibold text-black hover:bg-[#c9740a]"
-      >
-        Start setup
-      </Link>
+        <div className="card mt-8 p-6 sm:p-8">
+          <Suspense>
+            <RegisterForm />
+          </Suspense>
+        </div>
 
-      <OwnershipFooter />
+        <OwnershipFooter />
+      </div>
     </main>
   );
 }

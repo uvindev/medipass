@@ -18,13 +18,13 @@ import type { Prisma } from "@prisma/client";
 import { createPatientIdentity, getAgentDID } from "@/lib/t3n/identity";
 import { issueMedicalVC } from "@/lib/t3n/credentials";
 import { db } from "@/lib/db";
+import { getSessionUser } from "@/lib/auth";
 import { isAppError } from "@/lib/errors";
 import { ownershipHeaders } from "@/lib/watermark";
 
 export const runtime = "nodejs";
 
 const bodySchema = z.object({
-  email: z.string().email(),
   firstName: z.string().min(1).max(50),
   lastName: z.string().min(1).max(50),
   dateOfBirth: z.string().optional(),
@@ -44,6 +44,26 @@ function numericIdFromDID(did: string): number {
 
 export async function POST(request: NextRequest) {
   try {
+    // 0. Require an authenticated patient — the identity binds to their account.
+    const account = await getSessionUser();
+    if (!account || account.role !== "patient") {
+      return NextResponse.json(
+        { error: "UNAUTHORIZED" },
+        { status: 401, headers: ownershipHeaders },
+      );
+    }
+
+    // One identity per account.
+    const existing = await db.patientSession.findUnique({
+      where: { userId: account.id },
+    });
+    if (existing) {
+      return NextResponse.json(
+        { error: "IDENTITY_EXISTS", did: existing.patientDID },
+        { status: 409, headers: ownershipHeaders },
+      );
+    }
+
     const data = bodySchema.parse(await request.json());
 
     // 1. Mint a real did:t3n for the patient (fresh ECDSA key → SIWE auth).
@@ -77,7 +97,8 @@ export async function POST(request: NextRequest) {
     // 4. PatientSession (holds the credential payload interim — see credentials.ts).
     await db.patientSession.create({
       data: {
-        email: data.email,
+        userId: account.id,
+        email: account.email,
         t3nUserId,
         patientDID: identity.did,
         vcId: issued.vcId,

@@ -9,6 +9,7 @@
 
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
+import { AuthNav } from "@/components/auth/AuthNav";
 
 export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }) {
   const dark = variant === "dark";
@@ -24,21 +25,8 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
         <Link href="/" className="transition hover:opacity-80">
           <Logo />
         </Link>
-        <nav className="flex items-center gap-1 text-sm font-medium">
-          <Link
-            href="/patient/setup"
-            className={`rounded-lg px-3 py-1.5 transition ${
-              dark ? "hover:bg-white/10" : "hover:bg-neutral-100"
-            }`}
-          >
-            Patient
-          </Link>
-          <Link
-            href="/doctor"
-            className="rounded-lg bg-[#F7931A] px-3.5 py-1.5 font-semibold text-black transition hover:bg-[#ffb454]"
-          >
-            Doctor portal
-          </Link>
+        <nav className="flex items-center gap-1.5 text-sm font-medium">
+          <AuthNav dark={dark} />
         </nav>
       </div>
     </header>

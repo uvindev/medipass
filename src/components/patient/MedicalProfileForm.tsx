@@ -27,7 +27,6 @@ interface SetupResult {
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 export function MedicalProfileForm() {
-  const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [bloodType, setBloodType] = useState("O+");
@@ -57,7 +56,6 @@ export function MedicalProfileForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email,
           firstName,
           lastName,
           bloodType,
@@ -87,7 +85,6 @@ export function MedicalProfileForm() {
           t3nUserId: data.t3nUserId,
           vcId: data.vcId,
           vcCID: data.vcCID,
-          email,
         }),
       );
     } catch (err) {
@@ -143,14 +140,6 @@ export function MedicalProfileForm() {
         <Input label="First name" value={firstName} onChange={setFirstName} required />
         <Input label="Last name" value={lastName} onChange={setLastName} required />
       </div>
-
-      <Input
-        label="Email"
-        type="email"
-        value={email}
-        onChange={setEmail}
-        required
-      />
 
       <div>
         <label htmlFor="blood-type" className="mb-1 block text-sm font-medium">

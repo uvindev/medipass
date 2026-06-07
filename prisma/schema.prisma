@@ -77,6 +77,7 @@ model AgentSession {
 // Created during patient setup, referenced during token issuance.
 model PatientSession {
   id         String   @id @default(cuid())
+  userId     String?  @unique // Supabase auth user id (the account owner)
   email      String   @unique
   t3nUserId  Int // T3N user_id (number)
   patientDID String   @unique // did:t3n:...

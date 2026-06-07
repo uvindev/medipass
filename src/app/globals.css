@@ -84,6 +84,22 @@ body {
   border-radius: 16px;
 }
 
+/* Auth form input */
+.auth-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #d4d4d4;
+  padding: 0.625rem 0.75rem;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.auth-input:focus {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.25);
+}
+
 /* Pill / badge */
 .pill {
   display: inline-flex;

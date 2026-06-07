@@ -28,16 +28,22 @@ export default function PatientQRPage() {
   const [dataUrl, setDataUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const raw = window.localStorage.getItem("medipass.identity");
-    if (!raw) return;
-    const parsed = JSON.parse(raw) as Identity;
-    setDid(parsed.did);
-
-    void QRCode.toDataURL(parsed.did, {
-      width: 320,
-      margin: 2,
-      color: { dark: "#0A0A0A", light: "#FFFFFF" },
-    }).then(setDataUrl);
+    void (async () => {
+      const res = await fetch("/api/patient");
+      if (!res.ok) return;
+      const body = (await res.json()) as {
+        data: { identity: Identity | null };
+      };
+      const id = body.data.identity;
+      if (!id) return;
+      setDid(id.did);
+      const url = await QRCode.toDataURL(id.did, {
+        width: 320,
+        margin: 2,
+        color: { dark: "#0A0A0A", light: "#FFFFFF" },
+      });
+      setDataUrl(url);
+    })();
   }, []);
 
   return (
