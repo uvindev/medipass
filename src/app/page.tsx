@@ -107,13 +107,13 @@ export default function Home() {
           <div className="animate-in mt-9 flex flex-wrap gap-3">
             <Link
               href="/register"
-              className="rounded-xl bg-[#F7931A] px-6 py-3 font-semibold text-black shadow-lg shadow-orange-500/20 transition hover:bg-[#ffb454]"
+              className="rounded-xl bg-[#F7931A] px-6 py-3 font-semibold text-black shadow-lg shadow-orange-500/20 transition duration-200 hover:-translate-y-0.5 hover:bg-[#ffb454]"
             >
               Create your identity
             </Link>
             <Link
               href="/login"
-              className="rounded-xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+              className="rounded-xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-white/10"
             >
               I&apos;m a clinician →
             </Link>
@@ -315,24 +315,43 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-6xl px-6 py-24 text-center">
-        <h2 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
-          Carry your records across any border — safely.
-        </h2>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link
-            href="/register"
-            className="rounded-xl bg-[#F7931A] px-6 py-3 font-semibold text-black transition hover:bg-[#ffb454]"
-          >
-            Get started
-          </Link>
-          <Link
-            href="/login"
-            className="rounded-xl border border-neutral-300 px-6 py-3 font-semibold transition hover:border-[#F7931A]"
-          >
-            Sign in
-          </Link>
+      <section className="mx-auto max-w-6xl px-6 py-24">
+        <div className="relative overflow-hidden rounded-3xl bg-ink px-6 py-20 text-center text-white">
+          <div className="absolute inset-0 bg-grid opacity-40" />
+          <div className="glow-brand absolute inset-x-0 top-0 h-80" />
+          <div className="pointer-events-none absolute -left-24 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-[#F7931A]/25 blur-[120px]" />
+          <div className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#4A9EFF]/15 blur-[120px]" />
+
+          <div className="relative">
+            <span className="pill bg-white/10 text-white ring-1 ring-white/15">
+              <span className="live-dot h-1.5 w-1.5 rounded-full bg-green-400" />
+              Free · open beta on Terminal 3 testnet
+            </span>
+            <h2 className="mx-auto mt-6 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
+              Carry your records across any border —{" "}
+              <span className="text-gradient">safely.</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-lg text-lg text-white/60">
+              Create your medical identity in under a minute. Disclosed only with
+              your consent. Revocable any time.
+            </p>
+            <div className="mt-9 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/register"
+                className="rounded-xl bg-[#F7931A] px-7 py-3.5 font-semibold text-black shadow-lg shadow-orange-500/30 transition duration-200 hover:-translate-y-0.5 hover:bg-[#ffb454]"
+              >
+                Get started — free
+              </Link>
+              <Link
+                href="/login"
+                className="rounded-xl border border-white/20 bg-white/5 px-7 py-3.5 font-semibold text-white backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-white/10"
+              >
+                Sign in
+              </Link>
+            </div>
+          </div>
         </div>
+
         <OwnershipFooter />
       </section>
     </main>
