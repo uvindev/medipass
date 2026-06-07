@@ -83,7 +83,7 @@ export function LiveNetwork() {
         cc: loc.cc,
         at: Date.now(),
       };
-      setFeed((f) => [item, ...f].slice(0, 5));
+      setFeed((f) => [item, ...f].slice(0, 9));
       setCounts((c) => ({
         disc: c.disc + (ev.bump === "disc" ? 1 : Math.random() < 0.4 ? 1 : 0),
         id: c.id + (ev.bump === "id" ? 1 : 0),
@@ -91,8 +91,23 @@ export function LiveNetwork() {
         cc: c.cc,
       }));
     }
-    tick();
-    const a = setInterval(tick, 1900);
+
+    // Seed the feed full immediately so the panel never looks empty.
+    setFeed(
+      Array.from({ length: 8 }, (_, i) => {
+        const ev = rng(EVENTS);
+        const loc = rng(CITIES);
+        return {
+          id: nextId.current++,
+          label: ev.label,
+          color: ev.color,
+          city: loc.city,
+          cc: loc.cc,
+          at: Date.now() - (i + 1) * 2300,
+        };
+      }),
+    );
+    const a = setInterval(tick, 2200);
     const b = setInterval(() => force((n) => n + 1), 1000); // refresh "Xs ago"
     return () => {
       clearInterval(a);
@@ -131,15 +146,19 @@ export function LiveNetwork() {
           </div>
 
           {/* Activity feed */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
-            <div className="px-2 pb-2 font-mono text-[10px] uppercase tracking-widest text-white/40">
-              live activity
+          <div className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-3">
+            <div className="flex items-center justify-between px-2 pb-2 font-mono text-[10px] uppercase tracking-widest text-white/40">
+              <span>live activity</span>
+              <span className="flex items-center gap-1.5">
+                <span className="live-dot h-1.5 w-1.5 rounded-full bg-green-400" />
+                live
+              </span>
             </div>
-            <ul className="space-y-1">
+            <ul className="flex-1 space-y-0.5">
               {feed.map((e) => (
                 <li
                   key={e.id}
-                  className="animate-in flex items-center gap-3 rounded-lg px-2 py-2 text-sm"
+                  className="animate-in flex items-center gap-3 rounded-lg px-2 py-[7px] text-sm transition-colors hover:bg-white/5"
                 >
                   <span
                     className="h-2 w-2 shrink-0 rounded-full"
@@ -149,12 +168,16 @@ export function LiveNetwork() {
                     {e.label}
                     <span className="text-white/40"> · {e.city}</span>
                   </span>
-                  <span className="shrink-0 font-mono text-[11px] text-white/35">
+                  <span className="shrink-0 font-mono text-[11px] tabular-nums text-white/35">
                     {ago(e.at)}
                   </span>
                 </li>
               ))}
             </ul>
+            <div className="mt-3 flex items-center gap-2 border-t border-white/5 px-2 pt-3 font-mono text-[10px] uppercase tracking-widest text-white/30">
+              <span className="h-1 w-1 animate-pulse rounded-full bg-[#F7931A]" />
+              streaming · global testnet nodes
+            </div>
           </div>
         </div>
         <p className="mt-4 text-xs text-white/30">
