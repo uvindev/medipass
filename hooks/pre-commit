@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# MediPass — pre-commit hook
+# Copyright (c) 2026 Uvin Vindula — IAMUVIN (iamuvin.com)
+#
+# Install: cp hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+#
+# Blocks commits that would leak secrets or strip ownership markers.
+
+set -euo pipefail
+
+staged="$(git diff --cached --name-only --diff-filter=ACM)"
+
+fail() {
+  echo "pre-commit: $1" >&2
+  exit 1
+}
+
+# 1. Never commit env secrets.
+if echo "$staged" | grep -qE '(^|/)\.env(\.local)?$'; then
+  fail "refusing to commit a .env / .env.local file"
+fi
+
+# 2. Never commit the agent private key.
+if git diff --cached | grep -qE 'T3N_AGENT_PRIVATE_KEY=[0-9a-fA-F]{32,}'; then
+  fail "T3N_AGENT_PRIVATE_KEY value detected in staged changes"
+fi
+
+# 3. Ownership markers must remain.
+for required in LICENSE NOTICE SECURITY.md; do
+  if [ ! -f "$required" ]; then
+    fail "ownership file '$required' is missing"
+  fi
+done
+
+echo "pre-commit: ownership + secret checks passed"
+exit 0

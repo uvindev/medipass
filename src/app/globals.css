@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+/**
+ * MediPass — Global Styles
+ * Copyright (c) 2026 Uvin Vindula — IAMUVIN (iamuvin.com)
+ */
+
+@theme {
+  --color-brand: #f7931a;
+  --color-brand-dark: #c9740a;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+}

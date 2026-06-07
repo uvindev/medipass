@@ -1,0 +1,90 @@
+// MediPass — Database Schema
+// Copyright (c) 2026 Uvin Vindula — IAMUVIN (iamuvin.com)
+//
+// @author Uvin Vindula (IAMUVIN)
+// @website https://iamuvin.com
+// @company Terra Labz — terralabz.io
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── AccessLog ────────────────────────────────────────────────────────────────
+// Immutable record of every T3N data access event.
+// Never update. Never delete. Append-only.
+model AccessLog {
+  id             String   @id @default(cuid())
+  patientId      String // T3N user_id (number stored as string)
+  patientDID     String // did:key:z... of the patient
+  doctorId       String // session-based doctor identifier
+  hospitalName   String? // doctor-provided, optional
+  fieldsAccessed String[] // e.g. ["blood_type", "allergies"]
+  agentDID       String // which MediAgent DID made the request
+  vcId           String // UUID of the VC used for presentation
+  vcCID          String // IPFS CID of the stored VC
+  timestamp      DateTime @default(now()) @db.Timestamptz
+  ipAddress      String? // request IP for audit purposes
+
+  @@index([patientId])
+  @@index([timestamp])
+}
+
+// ─── DataToken ────────────────────────────────────────────────────────────────
+// Authorization grant from patient to agent.
+// Checked on every agent invocation before any T3N call.
+model DataToken {
+  id           String    @id @default(cuid())
+  patientId    String // T3N user_id
+  patientDID   String // did:key:z... of the patient
+  agentDID     String // authorized agent DID (our T3N_AGENT_DID)
+  fields       String[] // allowed MedicalField values
+  allowedHosts String[] // EHR endpoints (future use — empty in sandbox)
+  expiresAt    DateTime  @db.Timestamptz
+  revoked      Boolean   @default(false)
+  revokedAt    DateTime? @db.Timestamptz
+  createdAt    DateTime  @default(now()) @db.Timestamptz
+
+  @@index([patientId])
+  @@index([agentDID])
+  @@index([patientDID])
+}
+
+// ─── AgentSession ─────────────────────────────────────────────────────────────
+// Tracks an ongoing doctor-patient interaction session.
+// Contains the Claude message history for multi-turn context.
+model AgentSession {
+  id         String   @id @default(cuid())
+  sessionId  String   @unique @default(cuid())
+  doctorId   String // session-based doctor identifier
+  patientDID String // patient being accessed
+  messages   Json // Anthropic CoreMessage[] array
+  complete   Boolean  @default(false)
+  createdAt  DateTime @default(now()) @db.Timestamptz
+  updatedAt  DateTime @updatedAt @db.Timestamptz
+
+  @@index([sessionId])
+  @@index([doctorId])
+}
+
+// ─── PatientSession ───────────────────────────────────────────────────────────
+// Links a logged-in patient to their T3N identity.
+// Created during patient setup, referenced during token issuance.
+model PatientSession {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  t3nUserId  Int // T3N user_id (number)
+  patientDID String   @unique // did:key:z...
+  vcId       String // UUID of their MedicalIdentityVC
+  vcCID      String // IPFS CID
+  createdAt  DateTime @default(now()) @db.Timestamptz
+  updatedAt  DateTime @updatedAt @db.Timestamptz
+
+  @@index([patientDID])
+  @@index([t3nUserId])
+}

@@ -1,0 +1,43 @@
+MediPass — Proprietary Software License
+Copyright (c) 2026 Uvin Vindula (IAMUVIN). All Rights Reserved.
+
+First published: 7 June 2026.
+Author: Uvin Vindula — uvin95dev@gmail.com — https://iamuvin.com
+Company: Terra Labz — https://terralabz.io
+
+1. GRANT
+   No license, right, or permission is granted by this document. This software
+   and all associated source code, designs, documentation, and assets
+   (the "Software") are the exclusive intellectual property of Uvin Vindula.
+
+2. RESTRICTIONS
+   You may NOT, without prior written permission from the copyright holder:
+   (a) copy, reproduce, or republish the Software in whole or in part;
+   (b) modify, adapt, translate, or create derivative works;
+   (c) distribute, sublicense, rent, lease, sell, or otherwise transfer it;
+   (d) deploy the Software to any host, domain, or environment;
+   (e) remove, alter, or obscure any copyright, attribution, or ownership notice.
+
+3. PERMITTED EVALUATION
+   The Terminal 3 Agent Dev Kit Bounty Challenge judges and Terminal 3
+   organizers are granted a limited, non-transferable, revocable right to
+   review and evaluate the Software solely for the purpose of judging the
+   competition. This right confers no ownership and expires at the conclusion
+   of judging.
+
+4. OWNERSHIP ENFORCEMENT
+   The Software contains embedded authorship markers (HTTP response headers,
+   console beacons, and a deployment canary). Operating an unauthorized
+   deployment will transmit telemetry to the copyright holder. Such telemetry
+   is collected as evidence of infringement.
+
+5. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR
+   OTHER LIABILITY ARISING FROM THE SOFTWARE OR ITS USE.
+
+6. GOVERNING LAW
+   This license is governed by applicable copyright law. Unauthorized use is a
+   violation of that law and may result in civil and criminal penalties.
+
+For licensing inquiries: uvin95dev@gmail.com

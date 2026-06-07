@@ -1,0 +1,37 @@
+MediPass — Intellectual Property Notice
+========================================
+
+Project:        MediPass — Cross-Border Medical Identity Agent
+Author:         Uvin Vindula (IAMUVIN)
+Contact:        uvin95dev@gmail.com
+Website:        https://iamuvin.com
+Company:        Terra Labz — https://terralabz.io
+First Published: 7 June 2026
+Copyright:      Copyright (c) 2026 Uvin Vindula. All Rights Reserved.
+
+ORIGINAL AUTHORSHIP
+-------------------
+MediPass — including its architecture, source code, cryptographic identity
+layer, Claude-powered agent design (four-tool selective-disclosure flow),
+database schema, API surface, and user interface — was conceived, designed,
+and implemented in its entirety by Uvin Vindula for the Terminal 3 Agent
+Dev Kit Bounty Challenge.
+
+THIRD-PARTY COMPONENTS
+----------------------
+This project depends on open-source libraries, each under its own license
+(Next.js, React, Prisma, Vercel AI SDK, @noble/curves, multiformats, zod, and
+others — see package.json). Those licenses apply only to the respective
+upstream packages and confer no rights to the MediPass source.
+
+TERMINAL 3 NETWORK
+------------------
+MediPass integrates the Terminal 3 Network staging API as an external service.
+Terminal 3 Network and its trademarks belong to their respective owners.
+Integration does not imply endorsement or transfer of ownership in either
+direction.
+
+NOTICE PRESERVATION
+-------------------
+This NOTICE file and the LICENSE file must be preserved in all copies or
+substantial portions of the Software that are authorized in writing.
