@@ -20,9 +20,22 @@ const nextConfig = {
   // match App Router route handlers). node-linker=hoisted (.npmrc) keeps this a
   // real path so Vercel packages it without the "symlinked directories" error.
   outputFileTracingIncludes: {
-    "/api/t3n/user": ["./node_modules/@terminal3/**/*.wasm"],
-    "/api/t3n/present": ["./node_modules/@terminal3/**/*.wasm"],
-    "/api/agent": ["./node_modules/@terminal3/**/*.wasm"],
+    "/api/t3n/user": [
+      "./node_modules/@terminal3/**",
+      "./node_modules/@bytecodealliance/**",
+    ],
+    "/api/t3n/present": [
+      "./node_modules/@terminal3/**",
+      "./node_modules/@bytecodealliance/**",
+    ],
+    "/api/agent": [
+      "./node_modules/@terminal3/**",
+      "./node_modules/@bytecodealliance/**",
+    ],
+    "/api/health/sdk": [
+      "./node_modules/@terminal3/**",
+      "./node_modules/@bytecodealliance/**",
+    ],
   },
   // Ownership watermarks applied on every HTTP response at the edge.
   async headers() {
