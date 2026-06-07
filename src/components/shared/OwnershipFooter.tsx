@@ -29,7 +29,7 @@ export function OwnershipFooter() {
           >
             Uvin Vindula — IAMUVIN
           </a>{" "}
-          · Terra Labz · © 2026 · All Rights Reserved
+          · Terra Labz | inSITE Campus · © 2026 · All Rights Reserved
         </p>
       </div>
     </footer>
