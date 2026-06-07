@@ -14,6 +14,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Globe3D } from "./Globe3D";
 
 // Approx equirectangular positions (x%, y%) so the dots read as a world map.
 const CITIES = [
@@ -66,7 +67,6 @@ function ago(ms: number): string {
 
 export function LiveNetwork() {
   const [feed, setFeed] = useState<Activity[]>([]);
-  const [active, setActive] = useState<string | null>(null);
   const [counts, setCounts] = useState({ disc: 8421, id: 3187, rev: 642, cc: 41 });
   const [, force] = useState(0);
   const nextId = useRef(1);
@@ -84,7 +84,6 @@ export function LiveNetwork() {
         at: Date.now(),
       };
       setFeed((f) => [item, ...f].slice(0, 5));
-      setActive(loc.city);
       setCounts((c) => ({
         disc: c.disc + (ev.bump === "disc" ? 1 : Math.random() < 0.4 ? 1 : 0),
         id: c.id + (ev.bump === "id" ? 1 : 0),
@@ -126,33 +125,9 @@ export function LiveNetwork() {
         </div>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-          {/* World map of pulsing nodes */}
-          <div className="relative aspect-[2/1] overflow-hidden rounded-2xl border border-white/10 bg-[#0c0e13]">
-            <div className="absolute inset-0 bg-dots opacity-[0.06]" />
-            {CITIES.map((c) => {
-              const hot = active === c.city;
-              return (
-                <div
-                  key={c.city}
-                  className="absolute -translate-x-1/2 -translate-y-1/2"
-                  style={{ left: `${c.x}%`, top: `${c.y}%` }}
-                >
-                  {hot && (
-                    <span className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#F7931A]" />
-                  )}
-                  <span
-                    className={`block h-1.5 w-1.5 rounded-full transition-all duration-500 ${
-                      hot
-                        ? "bg-[#FFB454] shadow-[0_0_12px_3px_rgba(247,147,26,0.7)]"
-                        : "bg-white/30"
-                    }`}
-                  />
-                </div>
-              );
-            })}
-            <span className="absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/30">
-              global node activity
-            </span>
+          {/* 3D network globe — rotating, with arcs flying city-to-city */}
+          <div className="h-[340px] sm:h-[460px]">
+            <Globe3D />
           </div>
 
           {/* Activity feed */}
