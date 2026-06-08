@@ -143,9 +143,10 @@ export function LiveNetwork() {
           </div>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-          {/* 3D network globe — rotating, with arcs flying city-to-city */}
-          <div className="h-[340px] sm:h-[460px]">
+        <div className="mt-10 grid gap-6 md:grid-cols-[1.5fr_1fr]">
+          {/* 3D network globe — rotating, with arcs flying city-to-city.
+              Proportional (aspect) until tablet, fixed height once side-by-side. */}
+          <div className="aspect-[6/5] sm:aspect-[16/10] md:aspect-auto md:h-[460px]">
             <Globe3D />
           </div>
 

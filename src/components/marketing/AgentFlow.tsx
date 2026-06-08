@@ -72,15 +72,15 @@ export function AgentFlow() {
           </p>
         </div>
 
-        {/* progress rail */}
+        {/* progress rail (only when steps sit in one row, on desktop) */}
         <div className="relative mt-12">
-          <div className="absolute left-0 right-0 top-5 hidden h-px bg-white/10 md:block" />
+          <div className="absolute left-0 right-0 top-5 hidden h-px bg-white/10 lg:block" />
           <div
-            className="absolute left-0 top-5 hidden h-px bg-[#F7931A] transition-all duration-700 ease-out md:block"
+            className="absolute left-0 top-5 hidden h-px bg-[#F7931A] transition-all duration-700 ease-out lg:block"
             style={{ width: `${progress}%` }}
           />
 
-          <ol className="grid gap-6 md:grid-cols-4">
+          <ol className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s, i) => {
               const status = statusOf(i);
               return (
