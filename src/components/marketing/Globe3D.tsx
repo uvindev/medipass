@@ -165,21 +165,47 @@ export function Globe3D() {
   }, [inView, lite, reduce]);
 
   // Configure the renderer + camera once the globe instance has initialized.
-  const handleReady = useCallback(() => {
+  const configure = useCallback(() => {
     const g = globeRef.current;
-    if (!g) return;
-    const renderer = g.renderer();
-    // The key mobile fix: cap the drawing-buffer pixel ratio. Retina phones
-    // default to 3x, which makes this canvas render ~9x the pixels and stall.
-    const dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
-    renderer.setPixelRatio(Math.min(dpr, lite ? 1 : 1.5));
-    const controls = g.controls();
-    controls.enableZoom = false;
-    controls.autoRotate = !reduce;
-    controls.autoRotateSpeed = 0.6;
-    g.pointOfView({ lat: 18, lng: 20, altitude: 2.4 });
-    setReady(true);
+    if (!g) return false;
+    try {
+      const renderer = g.renderer();
+      // The key mobile fix: cap the drawing-buffer pixel ratio. Retina phones
+      // default to 3x, which makes this canvas render ~9x the pixels and stall.
+      const dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
+      renderer.setPixelRatio(Math.min(dpr, lite ? 1 : 1.5));
+      const controls = g.controls();
+      controls.enableZoom = false;
+      controls.autoRotate = !reduce;
+      controls.autoRotateSpeed = 0.6;
+      g.pointOfView({ lat: 18, lng: 20, altitude: 2.4 });
+      return true;
+    } catch {
+      return false;
+    }
   }, [lite, reduce]);
+
+  // Reveal the globe as soon as the instance is live. onGlobeReady is unreliable
+  // with a custom material, so we also poll for the instance and hard-stop after
+  // 3.5s so the loader can never stick.
+  useEffect(() => {
+    if (!inView || !webgl || size.w === 0 || ready) return;
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      configure();
+      setReady(true);
+    };
+    const poll = setInterval(() => {
+      if (globeRef.current && configure()) finish();
+    }, 120);
+    const failsafe = setTimeout(finish, 3500);
+    return () => {
+      clearInterval(poll);
+      clearTimeout(failsafe);
+    };
+  }, [inView, webgl, size.w, ready, configure]);
 
   return (
     <div
@@ -198,7 +224,6 @@ export function Globe3D() {
         >
           <Globe
             ref={globeRef}
-            onGlobeReady={handleReady}
             width={size.w}
             height={size.h}
             backgroundColor="rgba(0,0,0,0)"
@@ -295,7 +320,7 @@ function SphereFallback() {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
       <div
-        className="relative aspect-square w-[68%] max-w-[300px] rounded-full"
+        className="relative aspect-square w-[68%] max-w-75 rounded-full"
         style={{
           background:
             "radial-gradient(circle at 36% 30%, #1b212e 0%, #0c0f15 62%, #07090d 100%)",
