@@ -153,6 +153,46 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Impact — by the numbers */}
+      <section className="border-b border-neutral-200 bg-white">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <div className="reveal max-w-2xl">
+            <Badge tone="brand">By the numbers</Badge>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+              A problem measured in dollars — and in lives.
+            </h2>
+          </div>
+          <div className="stagger mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <Stat
+              num="$42B"
+              label="Annual global cost of medication errors — ~1% of all health spending."
+              src="WHO"
+            />
+            <Stat
+              num="~50%"
+              label="Of all preventable medical harm is medication-related; a quarter is severe."
+              src="WHO"
+            />
+            <Stat
+              num="1.4B"
+              label="International trips a year — each one a medical record left behind."
+              src="UN Tourism 2024"
+            />
+            <Stat
+              num="25–30%"
+              label="Of medical errors are avoidable when a clinician can access the record."
+              src="Peer-reviewed research"
+            />
+          </div>
+          <p className="reveal mt-8 max-w-3xl text-neutral-600">
+            The data that prevents the deadliest mistakes — blood type, allergies,
+            current medications — is exactly what MediPass discloses to a clinician
+            on arrival: consented, cross-language, revocable. Penicillin anaphylaxis
+            alone kills hundreds a year; an allergy shown in time prevents it.
+          </p>
+        </div>
+      </section>
+
       {/* How it works */}
       <section className="mx-auto max-w-6xl px-6 py-24">
         <div className="reveal max-w-2xl">
@@ -359,6 +399,30 @@ export default function Home() {
 
       <SiteFooter />
     </main>
+  );
+}
+
+function Stat({
+  num,
+  label,
+  src,
+}: {
+  num: string;
+  label: string;
+  src: string;
+}) {
+  return (
+    <div className="card flex flex-col p-6">
+      <div className="text-3xl font-bold tracking-tight text-[#F7931A]">
+        {num}
+      </div>
+      <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-600">
+        {label}
+      </p>
+      <p className="mt-4 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+        Source · {src}
+      </p>
+    </div>
   );
 }
 
