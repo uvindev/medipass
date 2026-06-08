@@ -31,8 +31,34 @@ export const metadata: Metadata = {
   publisher: "Terra Labz",
   applicationName: "MediPass",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://medipass.vercel.app",
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://medipass-seven.vercel.app",
   ),
+  keywords: [
+    "medical identity",
+    "Terminal 3 Network",
+    "did:t3n",
+    "BBS+ selective disclosure",
+    "agent auth",
+    "verifiable credentials",
+    "AI agent",
+    "cross-border healthcare",
+  ],
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "MediPass",
+    title: "MediPass — Cross-Border Medical Identity Agent",
+    description:
+      "A clinician's AI agent retrieves only the fields you authorize — via BBS+ selective disclosure on Terminal 3 Network. Consented, revocable, audited. The agent never holds your full record.",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MediPass — Cross-Border Medical Identity Agent",
+    description:
+      "Your medical identity, retrieved by an agent — never held in the open. Selective disclosure on Terminal 3 Network.",
+    creator: "@iamuvin",
+  },
   other: {
     "X-Built-By": "Uvin Vindula - IAMUVIN (iamuvin.com)",
     "X-Copyright": "Copyright (c) 2026 Uvin Vindula. All Rights Reserved.",

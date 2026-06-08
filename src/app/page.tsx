@@ -13,6 +13,8 @@ import { SiteHeader } from "@/components/shared/SiteHeader";
 import { SiteFooter } from "@/components/shared/SiteFooter";
 import { Badge } from "@/components/ui/Badge";
 import { LiveNetwork } from "@/components/marketing/LiveNetwork";
+import { AgentFlow } from "@/components/marketing/AgentFlow";
+import { FAQ } from "@/components/marketing/FAQ";
 
 const PROOFS = [
   { k: "did:t3n", v: "Verifiable identity" },
@@ -219,6 +221,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Inside the agent */}
+      <AgentFlow />
+
       {/* Features */}
       <section className="border-y border-neutral-200 bg-[#fbfbfa]">
         <div className="mx-auto max-w-6xl px-6 py-24">
@@ -357,6 +362,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* FAQ */}
+      <FAQ />
 
       {/* CTA */}
       <section className="mx-auto max-w-6xl px-6 py-24">

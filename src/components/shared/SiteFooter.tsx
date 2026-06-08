@@ -39,7 +39,7 @@ const COLUMNS: { title: string; links: LinkDef[] }[] = [
       ["License", "/license"],
       ["Privacy", "/privacy"],
       ["Security", "/security"],
-      ["Contact", "mailto:uvin95dev@gmail.com"],
+      ["Contact", "/contact"],
     ],
   },
 ];
