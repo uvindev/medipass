@@ -19,6 +19,7 @@ import { createPatientIdentity, getAgentDID } from "@/lib/t3n/identity";
 import { issueMedicalVC } from "@/lib/t3n/credentials";
 import { db } from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
+import { newPublicId } from "@/lib/emergency";
 import { isAppError } from "@/lib/errors";
 import { ownershipHeaders } from "@/lib/watermark";
 
@@ -113,6 +114,8 @@ export async function POST(request: NextRequest) {
     await db.patientSession.create({
       data: {
         userId: account.id,
+        publicId: newPublicId(),
+        fullName: `${data.firstName} ${data.lastName}`.trim(),
         email: account.email,
         t3nUserId,
         patientDID: identity.did,

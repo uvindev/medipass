@@ -14,6 +14,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
+import { newPublicId } from "@/lib/emergency";
 import { ownershipHeaders } from "@/lib/watermark";
 
 export const runtime = "nodejs";
@@ -40,6 +41,16 @@ export async function GET() {
       );
     }
 
+    // Backfill a public emergency id for identities created before this feature.
+    let publicId = session.publicId;
+    if (!publicId) {
+      publicId = newPublicId();
+      await db.patientSession.update({
+        where: { id: session.id },
+        data: { publicId },
+      });
+    }
+
     const patientId = String(session.t3nUserId);
     const [tokens, logs] = await Promise.all([
       db.dataToken.findMany({
@@ -60,6 +71,8 @@ export async function GET() {
             did: session.patientDID,
             t3nUserId: session.t3nUserId,
             vcId: session.vcId,
+            publicId,
+            fullName: session.fullName,
           },
           tokens,
           logs,

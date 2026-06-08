@@ -78,6 +78,8 @@ model AgentSession {
 model PatientSession {
   id         String   @id @default(cuid())
   userId     String?  @unique // Supabase auth user id (the account owner)
+  publicId   String?  @unique // short id encoded in the emergency QR (public)
+  fullName   String? // patient name for the emergency card
   email      String   @unique
   t3nUserId  Int // T3N user_id (number)
   patientDID String   @unique // did:t3n:...
